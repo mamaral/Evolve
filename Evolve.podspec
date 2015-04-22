@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.social_media_url   = "http://twitter.com/MikeAmaral"
   s.platform     = :ios
   s.source       = { :git => "https://github.com/mamaral/Evolve.git", :tag => "v0.1" }
-  s.source_files  = "Evolve/Source/EvolutionManager.{h,m}", "Evolve/Source/Population.{h,m}", "Evolve/Source/Organism.{h,m}", "Evolve/Source/Chromosome.{h,m}", "Evolve/Source/Random.{h,m}"
+  s.source_files  = "Source/EvolutionManager.{h,m}", "Source/Population.{h,m}", "Source/Organism.{h,m}", "Source/Chromosome.{h,m}", "Source/Random.{h,m}"
   s.requires_arc = true
 
 end
