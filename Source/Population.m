@@ -14,8 +14,8 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initRandomPopulationWithSize:(NSUInteger)size geneSequenceLength:(NSUInteger)geneSequenceLength chromosomeDomain:(NSString *)domain {
-    return [self initWithOrganisms:[self generateRandomPopulationWithSize:size geneSequenceLength:geneSequenceLength chromosomeDomain:domain]];
+- (instancetype)initRandomPopulationWithSize:(NSUInteger)size geneSequenceLength:(NSUInteger)geneSequenceLength genomeDomain:(NSString *)domain {
+    return [self initWithOrganisms:[self generateRandomPopulationWithSize:size geneSequenceLength:geneSequenceLength genomeDomain:domain]];
 }
 
 - (instancetype)initWithOrganisms:(NSArray *)organisms {
@@ -36,7 +36,7 @@
 
 #pragma mark - Randomization
 
-- (NSArray *)generateRandomPopulationWithSize:(NSUInteger)size geneSequenceLength:(NSUInteger)geneSequenceLength chromosomeDomain:(NSString *)domain {
+- (NSArray *)generateRandomPopulationWithSize:(NSUInteger)size geneSequenceLength:(NSUInteger)geneSequenceLength genomeDomain:(NSString *)domain {
     NSMutableArray *startingOrganisms = [NSMutableArray arrayWithCapacity:size];
 
     for (NSInteger i = 0; i < size; i++) {

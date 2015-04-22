@@ -40,8 +40,8 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     NSMutableArray *organisms = [NSMutableArray arrayWithCapacity:randomNumberOfOrganisms];
 
     for (NSInteger i = 0; i < randomNumberOfOrganisms; i++) {
-        Chromosome *chromosome = [[Chromosome alloc] initRandomChromosomeWithLength:5 domain:@"abcd"];
-        [organisms addObject:[[Organism alloc] initWithChomosome:chromosome]];
+        Genome *genome = [[Genome alloc] initRandomGenomeWithLength:5 domain:@"abcd"];
+        [organisms addObject:[[Organism alloc] initWithGenome:genome]];
     }
 
     Population *testPopulation = [[Population alloc] initWithOrganisms:organisms];
@@ -61,7 +61,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
         NSInteger randomSize = [Random randomIntegerFromMin:2 toMax:100];
         NSInteger randomLength = [Random randomIntegerFromMin:1 toMax:10];
         NSString *domain = @"abcd";
-        Population *population = [[Population alloc] initRandomPopulationWithSize:randomSize geneSequenceLength:randomLength chromosomeDomain:domain];
+        Population *population = [[Population alloc] initRandomPopulationWithSize:randomSize geneSequenceLength:randomLength genomeDomain:domain];
 
         EvolutionManager *manager = [[EvolutionManager alloc] initWithPopulation:population];
 

@@ -19,15 +19,15 @@ static NSInteger const kOrganismTestIterations = 10000;
 
 @implementation OrganismTests
 
-- (void)testInitWithChromosome {
+- (void)testInitWithGenome {
     for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
-        Chromosome *chromosome = [[Chromosome alloc] initRandomChromosomeWithLength:5 domain:@"abcd"];
+        Genome *genome = [[Genome alloc] initRandomGenomeWithLength:5 domain:@"abcd"];
 
-        Organism *organism = [[Organism alloc] initWithChomosome:chromosome];
+        Organism *organism = [[Organism alloc] initWithGenome:genome];
 
         XCTAssertNotNil(organism);
-        XCTAssertNotNil(organism.chromosome);
-        XCTAssertEqualObjects(organism.chromosome, chromosome);
+        XCTAssertNotNil(organism.genome);
+        XCTAssertEqualObjects(organism.genome, genome);
         XCTAssertEqual(organism.fitness, 0);
     }
 }
@@ -40,9 +40,9 @@ static NSInteger const kOrganismTestIterations = 10000;
         Organism *organism = [[Organism alloc] initRandomWithGeneSequenceLength:randomLength domain:testDomain];
 
         XCTAssertNotNil(organism);
-        XCTAssertNotNil(organism.chromosome);
-        XCTAssertEqual(organism.chromosome.geneSequence.length, randomLength);
-        XCTAssert([organism.chromosome.domain isEqualToString:testDomain]);
+        XCTAssertNotNil(organism.genome);
+        XCTAssertEqual(organism.genome.sequence.length, randomLength);
+        XCTAssert([organism.genome.domain isEqualToString:testDomain]);
         XCTAssertEqual(organism.fitness, 0);
     }
 }
@@ -58,9 +58,9 @@ static NSInteger const kOrganismTestIterations = 10000;
     }
 }
 
-- (void)testInitWithInvalidChromosome {
+- (void)testInitWithInvalidGenome {
     void (^expressionBlock)() = ^{
-        __unused Organism *organism = [[Organism alloc] initWithChomosome:nil];
+        __unused Organism *organism = [[Organism alloc] initWithGenome:nil];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -100,17 +100,17 @@ static NSInteger const kOrganismTestIterations = 10000;
         Organism *offspring = [Organism offspringFromParent1:parent1 parent2:parent2 mutationRate:0.0];
 
         XCTAssertNotNil(offspring);
-        XCTAssertNotNil(offspring.chromosome);
-        XCTAssert([offspring.chromosome.domain isEqualToString:parent1.chromosome.domain]);
-        XCTAssert([offspring.chromosome.domain isEqualToString:parent2.chromosome.domain]);
-        XCTAssertEqual(offspring.chromosome.geneSequence.length, parent1.chromosome.geneSequence.length);
-        XCTAssertEqual(offspring.chromosome.geneSequence.length, parent2.chromosome.geneSequence.length);
+        XCTAssertNotNil(offspring.genome);
+        XCTAssert([offspring.genome.domain isEqualToString:parent1.genome.domain]);
+        XCTAssert([offspring.genome.domain isEqualToString:parent2.genome.domain]);
+        XCTAssertEqual(offspring.genome.sequence.length, parent1.genome.sequence.length);
+        XCTAssertEqual(offspring.genome.sequence.length, parent2.genome.sequence.length);
 
         NSInteger correctGenes = 0;
 
-        NSString *parent1GeneSequence = parent1.chromosome.geneSequence;
-        NSString *parent2GeneSequence = parent2.chromosome.geneSequence;
-        NSString *offspringGeneSequence = offspring.chromosome.geneSequence;
+        NSString *parent1GeneSequence = parent1.genome.sequence;
+        NSString *parent2GeneSequence = parent2.genome.sequence;
+        NSString *offspringGeneSequence = offspring.genome.sequence;
 
         for (NSInteger geneIndex = 0; geneIndex < testGeneSequenceLength; geneIndex++) {
             if ([offspringGeneSequence characterAtIndex:geneIndex] == [parent1GeneSequence characterAtIndex:geneIndex] || [offspringGeneSequence characterAtIndex:geneIndex] == [parent2GeneSequence characterAtIndex:geneIndex]) {

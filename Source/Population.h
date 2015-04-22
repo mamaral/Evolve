@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "Organism.h"
-#import "Chromosome.h"
+#import "Genome.h"
 
 @interface Population : NSObject
 
 @property (nonatomic, strong) NSArray *organisms;
 
-- (instancetype)initRandomPopulationWithSize:(NSUInteger)size geneSequenceLength:(NSUInteger)geneSequenceLength chromosomeDomain:(NSString *)domain;
+- (instancetype)initRandomPopulationWithSize:(NSUInteger)size geneSequenceLength:(NSUInteger)geneSequenceLength genomeDomain:(NSString *)domain;
 - (instancetype)initWithOrganisms:(NSArray *)organisms;
 
 @end

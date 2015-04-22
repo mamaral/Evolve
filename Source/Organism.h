@@ -7,15 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Chromosome.h"
+#import "Genome.h"
 
 @interface Organism : NSObject
 
-@property (nonatomic, strong) Chromosome *chromosome;
+@property (nonatomic, strong) Genome *genome;
 
 @property (nonatomic) NSInteger fitness;
 
-- (instancetype)initWithChomosome:(Chromosome *)chromosome;
+- (instancetype)initWithGenome:(Genome *)genome;
 - (instancetype)initRandomWithGeneSequenceLength:(NSUInteger)length domain:(NSString *)domain;
 
 + (instancetype)offspringFromParent1:(Organism *)parent1 parent2:(Organism *)parent2 mutationRate:(CGFloat)mutationRate;

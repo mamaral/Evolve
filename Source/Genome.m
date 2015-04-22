@@ -1,19 +1,19 @@
 //
-//  Chromosome.m
+//  Genome.m
 //  Evolve
 //
 //  Created by Mike on 3/23/15.
 //  Copyright (c) 2015 Mike Amaral. All rights reserved.
 //
 
-#import "Chromosome.h"
+#import "Genome.h"
 #import "Random.h"
 
-@implementation Chromosome
+@implementation Genome
 
 #pragma mark - Initializers
 
-- (instancetype)initRandomChromosomeWithLength:(NSUInteger)length domain:(NSString *)domain {
+- (instancetype)initRandomGenomeWithLength:(NSUInteger)length domain:(NSString *)domain {
     return [self initWithGeneSequence:[Random randomGeneSequenceWithLength:length domain:domain] domain:domain];
 }
 
@@ -29,7 +29,7 @@
     NSParameterAssert(domain);
     NSParameterAssert(domain.length > 0);
 
-    self.geneSequence = geneSequence;
+    self.sequence = geneSequence;
     self.domain = domain;
 
     return self;
@@ -43,9 +43,9 @@
     // 0 and 100, for easy probability calculation.
     NSInteger convertedMutationRate = (NSInteger)round(mutationRate * 100);
 
-    // Each gene in the chromosome has some random predetermined chance to mutate to some other gene.
+    // Each gene in the genome has some random predetermined chance to mutate to some other gene.
     // Here is where we apply this concept... First we iterate through all the genes in the sequence.
-    for (NSInteger geneIndex = 0; geneIndex < self.geneSequence.length; geneIndex++) {
+    for (NSInteger geneIndex = 0; geneIndex < self.sequence.length; geneIndex++) {
 
         // Determine if we should mutate this or not.
         NSInteger random = [Random randomIntegerFromMin:1 toMax:100];
@@ -59,7 +59,7 @@
             unichar randomCharInSet = [self.domain characterAtIndex:randomIndex];
             NSString *replacementString = [NSString stringWithFormat:@"%C", randomCharInSet];
 
-            self.geneSequence = [self.geneSequence stringByReplacingCharactersInRange:NSMakeRange(geneIndex, 1) withString:replacementString];
+            self.sequence = [self.sequence stringByReplacingCharactersInRange:NSMakeRange(geneIndex, 1) withString:replacementString];
         }
     }
 }
@@ -69,7 +69,7 @@
 - (NSString *)debugDescription {
     return @{
              @"domain": self.domain,
-             @"geneSequence": self.geneSequence
+             @"geneSequence": self.sequence
              }.description;
 }
 

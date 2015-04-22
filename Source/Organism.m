@@ -15,20 +15,20 @@
 #pragma mark - Initializers
 
 - (instancetype)initRandomWithGeneSequenceLength:(NSUInteger)length domain:(NSString *)domain {
-    return [self initWithChomosome:[[Chromosome alloc] initRandomChromosomeWithLength:length domain:domain]];
+    return [self initWithGenome:[[Genome alloc] initRandomGenomeWithLength:length domain:domain]];
 }
 
 
-- (instancetype)initWithChomosome:(Chromosome *)chromosome {
+- (instancetype)initWithGenome:(Genome *)genome {
     self = [super init];
 
     if (!self) {
         return nil;
     }
 
-    NSParameterAssert(chromosome);
+    NSParameterAssert(genome);
 
-    self.chromosome = chromosome;
+    self.genome = genome;
 
     return self;
 }
@@ -39,25 +39,25 @@
 + (instancetype)offspringFromParent1:(Organism *)parent1 parent2:(Organism *)parent2 mutationRate:(CGFloat)mutationRate {
     NSParameterAssert(parent1);
     NSParameterAssert(parent2);
-    NSParameterAssert([parent1.chromosome.domain isEqualToString:parent2.chromosome.domain]);
-    NSParameterAssert(parent1.chromosome.geneSequence.length == parent2.chromosome.geneSequence.length);
+    NSParameterAssert([parent1.genome.domain isEqualToString:parent2.genome.domain]);
+    NSParameterAssert(parent1.genome.sequence.length == parent2.genome.sequence.length);
     NSParameterAssert(mutationRate >= 0 && mutationRate <= 1);
     
-    // Randomly generate a crossover point and combine the parent's chromosomes there - which will
+    // Randomly generate a crossover point and combine the parent's genomes there - which will
     // be the child's starting gene sequence.
-    NSInteger crossoverPoint = [Random randomIntegerFromMin:0 toMax:parent1.chromosome.geneSequence.length - 1];
-    NSString *parent1Contribution = [parent1.chromosome.geneSequence substringToIndex:crossoverPoint];
-    NSString *parent2Contribution = [parent2.chromosome.geneSequence substringFromIndex:crossoverPoint];
+    NSInteger crossoverPoint = [Random randomIntegerFromMin:0 toMax:parent1.genome.sequence.length - 1];
+    NSString *parent1Contribution = [parent1.genome.sequence substringToIndex:crossoverPoint];
+    NSString *parent2Contribution = [parent2.genome.sequence substringFromIndex:crossoverPoint];
     NSString *offspringGeneSequence = [parent1Contribution stringByAppendingString:parent2Contribution];
 
-    // Create the child's chromosome with the parent's same configuration and the crossed over genetic pattern.
-    Chromosome *childsChromosome = [[Chromosome alloc] initWithGeneSequence:offspringGeneSequence domain:parent1.chromosome.domain];
+    // Create the child's genome with the parent's same configuration and the crossed over genetic pattern.
+    Genome *childsGenome = [[Genome alloc] initWithGeneSequence:offspringGeneSequence domain:parent1.genome.domain];
 
-    // Tell the chromosome to handle mutation given the provided mutation rate.
-    [childsChromosome handleMutationWithRate:mutationRate];
+    // Tell the genome to handle mutation given the provided mutation rate.
+    [childsGenome handleMutationWithRate:mutationRate];
 
-    // Create the child with this chromosome.
-    Organism *child = [[Organism alloc] initWithChomosome:childsChromosome];
+    // Create the child with this genome.
+    Organism *child = [[Organism alloc] initWithGenome:childsGenome];
     
     return child;
 }
@@ -67,7 +67,7 @@
 
 - (NSString *)debugDescription {
     return @{
-             @"geneSequence": self.chromosome.geneSequence,
+             @"geneSequence": self.genome.sequence,
              @"fitness": @(self.fitness)
              }.description;
 }

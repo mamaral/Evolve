@@ -1,5 +1,5 @@
 //
-//  Chromosome.h
+//  Genome.h
 //  Evolve
 //
 //  Created by Mike on 3/23/15.
@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface Chromosome : NSObject
+@interface Genome : NSObject
 
 @property (nonatomic, strong) NSString *domain;
-@property (nonatomic, strong) NSString *geneSequence;
+@property (nonatomic, strong) NSString *sequence;
 
 - (instancetype)initWithGeneSequence:(NSString *)geneSequence domain:(NSString *)domain;
-- (instancetype)initRandomChromosomeWithLength:(NSUInteger)length domain:(NSString *)domain;
+- (instancetype)initRandomGenomeWithLength:(NSUInteger)length domain:(NSString *)domain;
 
 - (void)handleMutationWithRate:(CGFloat)mutationRate;
 

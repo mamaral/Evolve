@@ -43,18 +43,18 @@ static NSInteger const kPopulationTestIterations = 10000;
         NSInteger randomGeneSequenceLength = [Random randomIntegerFromMin:2 toMax:30];
         NSString *domain = @"abcdefg1234567";
 
-        Population *population = [[Population alloc] initRandomPopulationWithSize:randomSize geneSequenceLength:randomGeneSequenceLength chromosomeDomain:domain];
+        Population *population = [[Population alloc] initRandomPopulationWithSize:randomSize geneSequenceLength:randomGeneSequenceLength genomeDomain:domain];
 
         XCTAssertNotNil(population);
         XCTAssertNotNil(population.organisms);
         XCTAssertEqual(population.organisms.count, randomSize);
 
         for (Organism *organism in population.organisms) {
-            XCTAssertNotNil(organism.chromosome);
-            XCTAssertNotNil(organism.chromosome.geneSequence);
-            XCTAssertEqual(organism.chromosome.geneSequence.length, randomGeneSequenceLength);
-            XCTAssertNotNil(organism.chromosome.domain);
-            XCTAssert([organism.chromosome.domain isEqualToString:domain]);
+            XCTAssertNotNil(organism.genome);
+            XCTAssertNotNil(organism.genome.sequence);
+            XCTAssertEqual(organism.genome.sequence.length, randomGeneSequenceLength);
+            XCTAssertNotNil(organism.genome.domain);
+            XCTAssert([organism.genome.domain isEqualToString:domain]);
         }
     }
 }
@@ -78,7 +78,7 @@ static NSInteger const kPopulationTestIterations = 10000;
 
 - (void)testInitRandomWithInsufficientCount {
     void (^expressionBlock)() = ^{
-        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:1 geneSequenceLength:4 chromosomeDomain:@"abcd"];
+        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:1 geneSequenceLength:4 genomeDomain:@"abcd"];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -86,7 +86,7 @@ static NSInteger const kPopulationTestIterations = 10000;
 
 - (void)testInitRandomWithInvalidLength {
     void (^expressionBlock)() = ^{
-        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:10 geneSequenceLength:0 chromosomeDomain:@"abcd"];
+        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:10 geneSequenceLength:0 genomeDomain:@"abcd"];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -94,7 +94,7 @@ static NSInteger const kPopulationTestIterations = 10000;
 
 - (void)testInitRandomWithNilDomain {
     void (^expressionBlock)() = ^{
-        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:10 geneSequenceLength:5 chromosomeDomain:nil];
+        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:10 geneSequenceLength:5 genomeDomain:nil];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -102,7 +102,7 @@ static NSInteger const kPopulationTestIterations = 10000;
 
 - (void)testInitRandomWithInvalidDomain {
     void (^expressionBlock)() = ^{
-        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:10 geneSequenceLength:5 chromosomeDomain:@""];
+        __unused Population *population = [[Population alloc] initRandomPopulationWithSize:10 geneSequenceLength:5 genomeDomain:@""];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);

@@ -54,9 +54,9 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
 #pragma mark - Population initialization
 
 - (void)configurePopulationAndStart {
-    // Create our population - which will be 50 organisms in size, will have a chromosome the length of our target string,
+    // Create our population - which will be 50 organisms in size, will have a genome the length of our target string,
     // and will have the domain defined above, which includes all capital letters and the space character.
-    Population *startingPopulation = [[Population alloc] initRandomPopulationWithSize:50 geneSequenceLength:kTargetString.length chromosomeDomain:kTargetDomain];
+    Population *startingPopulation = [[Population alloc] initRandomPopulationWithSize:50 geneSequenceLength:kTargetString.length genomeDomain:kTargetDomain];
 
     // Create our evolution manager with the starting population and set ourself as the delegate to recieve the appropriate callbacks.
     self.evolutionManager = [[EvolutionManager alloc] initWithPopulation:startingPopulation];
@@ -79,16 +79,16 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
 }
 
 - (NSInteger)fitnessFunctionForOrganism:(Organism *)organism {
-    // Get the chromosome string from this organism.
-    NSString *chromosomeString = organism.chromosome.geneSequence;
+    // Get the genome string from this organism.
+    NSString *genomeString = organism.genome.sequence;
 
-    // We're going to keep track of the number of characters in the chromosome that
+    // We're going to keep track of the number of characters in the genome that
     // match our target string at the correct index. Each match increases the "fitness"
     // of this organism.
     NSInteger correctCharacters = 0;
 
-    for (NSInteger charIndex = 0; charIndex < organism.chromosome.geneSequence.length; charIndex++) {
-        if ([chromosomeString characterAtIndex:charIndex] == [kTargetString characterAtIndex:charIndex]) {
+    for (NSInteger charIndex = 0; charIndex < organism.genome.sequence.length; charIndex++) {
+        if ([genomeString characterAtIndex:charIndex] == [kTargetString characterAtIndex:charIndex]) {
             correctCharacters++;
         }
     }
@@ -103,20 +103,20 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
     // Get the fittest organism for this generation, which will be the first object in the fittest organisms array.
     Organism *fittestOrganism = [fittestOrganisms firstObject];
 
-    // Get the string representation of the chromosome.
-    NSString *chromosomeString = fittestOrganism.chromosome.geneSequence;
+    // Get the string representation of the genome.
+    NSString *genomeString = fittestOrganism.genome.sequence;
 
     // If it equals our target string, we can end the simulation.
-    if ([chromosomeString isEqualToString:kTargetString]) {
-        self.fittestOrganismLabel.text = [NSString stringWithFormat:@"Target organism acheived in generation %ld:\n%@", generation, chromosomeString];
+    if ([genomeString isEqualToString:kTargetString]) {
+        self.fittestOrganismLabel.text = [NSString stringWithFormat:@"Target organism acheived in generation %ld:\n%@", generation, genomeString];
         self.fittestOrganismLabel.textColor = [UIColor redColor];
 
         [self.timer invalidate];
     }
 
-    // Otherwise just print out the generation number and the chromosome string for a visual representation of this generation.
+    // Otherwise just print out the generation number and the genome string for a visual representation of this generation.
     else {
-        self.fittestOrganismLabel.text = [NSString stringWithFormat:@"Fittest organism for generation %ld:\n%@", generation, chromosomeString];
+        self.fittestOrganismLabel.text = [NSString stringWithFormat:@"Fittest organism for generation %ld:\n%@", generation, genomeString];
     }
 }
 

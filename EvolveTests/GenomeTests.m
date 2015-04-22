@@ -1,5 +1,5 @@
 //
-//  ChromosomeTests.m
+//  GenomeTests.m
 //  Evolve
 //
 //  Created by Mike on 4/20/15.
@@ -8,53 +8,53 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "Chromosome.h"
+#import "Genome.h"
 #import "Random.h"
 
-static NSInteger const kChromosomeTestIterations = 10000;
+static NSInteger const kGenomeTestIterations = 10000;
 
-@interface ChromosomeTests : XCTestCase
+@interface GenomeTests : XCTestCase
 
 @end
 
-@implementation ChromosomeTests
+@implementation GenomeTests
 
 - (void)testInitWithGeneSequenceAndDomain {
     NSString *entireDomain = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789";
     
-    for (NSInteger i = 0; i < kChromosomeTestIterations; i++) {
+    for (NSInteger i = 0; i < kGenomeTestIterations; i++) {
         NSInteger randomSequenceLength = [Random randomIntegerFromMin:1 toMax:50];
         NSInteger randomDomainLength = [Random randomIntegerFromMin:1 toMax:25];
         NSString *randomDomain = [Random randomGeneSequenceWithLength:randomDomainLength domain:entireDomain];
         NSString *randomGeneSequence = [Random randomGeneSequenceWithLength:randomSequenceLength domain:randomDomain];
 
-        Chromosome *chromosome = [[Chromosome alloc] initWithGeneSequence:randomGeneSequence domain:randomDomain];
+        Genome *genome = [[Genome alloc] initWithGeneSequence:randomGeneSequence domain:randomDomain];
 
-        XCTAssertNotNil(chromosome);
-        XCTAssert([chromosome.geneSequence isEqualToString:randomGeneSequence]);
-        XCTAssert([chromosome.domain isEqualToString:randomDomain]);
+        XCTAssertNotNil(genome);
+        XCTAssert([genome.sequence isEqualToString:randomGeneSequence]);
+        XCTAssert([genome.domain isEqualToString:randomDomain]);
     }
 }
 
 - (void)testInitRandomWithLengthAndDomain {
     NSString *entireDomain = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789";
 
-    for (NSInteger i = 0; i < kChromosomeTestIterations; i++) {
+    for (NSInteger i = 0; i < kGenomeTestIterations; i++) {
         NSInteger randomSequenceLength = [Random randomIntegerFromMin:1 toMax:50];
         NSInteger randomDomainLength = [Random randomIntegerFromMin:1 toMax:25];
         NSString *randomDomain = [Random randomGeneSequenceWithLength:randomDomainLength domain:entireDomain];
 
-        Chromosome *chromosome = [[Chromosome alloc] initRandomChromosomeWithLength:randomSequenceLength domain:randomDomain];
+        Genome *genome = [[Genome alloc] initRandomGenomeWithLength:randomSequenceLength domain:randomDomain];
 
-        XCTAssertNotNil(chromosome);
-        XCTAssertEqual(chromosome.geneSequence.length, randomSequenceLength);
-        XCTAssert([chromosome.domain isEqualToString:randomDomain]);
+        XCTAssertNotNil(genome);
+        XCTAssertEqual(genome.sequence.length, randomSequenceLength);
+        XCTAssert([genome.domain isEqualToString:randomDomain]);
     }
 }
 
 - (void)testInitWithNilGeneSequence {
     void (^expressionBlock)() = ^{
-        __unused Chromosome *testChromosome = [[Chromosome alloc] initWithGeneSequence:nil domain:@"abcd"];
+        __unused Genome *testGenome = [[Genome alloc] initWithGeneSequence:nil domain:@"abcd"];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -62,7 +62,7 @@ static NSInteger const kChromosomeTestIterations = 10000;
 
 - (void)testInitWithInvalidGeneSequence {
     void (^expressionBlock)() = ^{
-        __unused Chromosome *testChromosome = [[Chromosome alloc] initWithGeneSequence:@"" domain:@"abcd"];
+        __unused Genome *testGenome = [[Genome alloc] initWithGeneSequence:@"" domain:@"abcd"];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -70,7 +70,7 @@ static NSInteger const kChromosomeTestIterations = 10000;
 
 - (void)testInitWithNilDomain {
     void (^expressionBlock)() = ^{
-        __unused Chromosome *testChromosome = [[Chromosome alloc] initWithGeneSequence:@"abcd" domain:nil];
+        __unused Genome *testGenome = [[Genome alloc] initWithGeneSequence:@"abcd" domain:nil];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -78,7 +78,7 @@ static NSInteger const kChromosomeTestIterations = 10000;
 
 - (void)testInitWithInvalidDomain {
     void (^expressionBlock)() = ^{
-        __unused Chromosome *testChromosome = [[Chromosome alloc] initWithGeneSequence:@"abcd" domain:@""];
+        __unused Genome *testGenome = [[Genome alloc] initWithGeneSequence:@"abcd" domain:@""];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -86,7 +86,7 @@ static NSInteger const kChromosomeTestIterations = 10000;
 
 - (void)testInitRandomWithInvalidLength {
     void (^expressionBlock)() = ^{
-        __unused Chromosome *testChromosome = [[Chromosome alloc] initRandomChromosomeWithLength:0 domain:@"abcd"];
+        __unused Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:0 domain:@"abcd"];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -94,7 +94,7 @@ static NSInteger const kChromosomeTestIterations = 10000;
 
 - (void)testInitRandomWithNilDomain {
     void (^expressionBlock)() = ^{
-        __unused Chromosome *testChromosome = [[Chromosome alloc] initRandomChromosomeWithLength:5 domain:nil];
+        __unused Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:5 domain:nil];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -102,7 +102,7 @@ static NSInteger const kChromosomeTestIterations = 10000;
 
 - (void)testInitRandomWithInvalidDomain {
     void (^expressionBlock)() = ^{
-        __unused Chromosome *testChromosome = [[Chromosome alloc] initRandomChromosomeWithLength:5 domain:@""];
+        __unused Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:5 domain:@""];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
