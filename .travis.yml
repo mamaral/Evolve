@@ -1,0 +1,3 @@
+language: objective-c
+script:
+  - xctool -project Evolve.xcodeproj -sdk iphonesimulator -scheme Evolve build
