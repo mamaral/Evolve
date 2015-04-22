@@ -27,7 +27,20 @@ The `EvolutionManager` handles all of the simulation mechanics, and is initializ
 - `geneSequenceLength` is the length of each organism's gene sequence, represented as an `NSString`.
 - `chromosomeDomain` is an `NSString` that represents all possible characters that can be used in the organism's gene sequence. For example, if you wanted an organism's genetic code to be represented as a binary string, you would set the domain to `@"01"`.
 
-In this example, we create our population with 50 organisms, a gene sequence length to be the length of the target string, `METHINKS IT IS LIKE A WEASEL`, and the domain includes all 26 capital letters as well as the space character. We then create our evolution manager with this population, and set ourself as the delegate, ensuring we're conforming to the `<EvolutionDelegate>` protocol.
+In this example, we create our population with 50 organisms, a gene sequence length to be the length of the target string, `METHINKS IT IS LIKE A WEASEL`, and the domain includes all 26 capital letters as well as the space character. We then create our evolution manager with this population, and set ourself as the delegate, ensuring we're conforming to the `<EvolutionDelegate>` protocol. In our view controller's header:
+
+```objective-c
+#import <UIKit/UIKit.h>
+#import "EvolutionManager.h"
+
+@interface WeaselProgramViewController : UIViewController <EvolutionDelegate>
+
+@property (nonatomic, strong) EvolutionManager *evolutionManager;
+
+@end
+```
+
+Then when we want to start the simulation:
 
 ```objective-c
 static NSString * const kTargetString = @"METHINKS IT IS LIKE A WEASEL";
