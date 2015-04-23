@@ -8,9 +8,9 @@
 
 #import "EvolutionManager.h"
 
-static CGFloat const kDefaultPercentageOfOrganismsThatReproduce = 0.33;
+static CGFloat const kDefaultReproductionPercentage = 0.33;
 static CGFloat const kDefaultMutationRate = 0.05;
-static CGFloat const kDefaultPercentageOfOrganismsThatSurvive = 0.10;
+static CGFloat const kDefaultElitismPercentage = 0.10;
 
 @implementation EvolutionManager
 
@@ -26,10 +26,13 @@ static CGFloat const kDefaultPercentageOfOrganismsThatSurvive = 0.10;
 
     NSParameterAssert(population);
 
+    // Assign our passed-in population.
     self.population = population;
+
+    // Set our defaults.
     self.mutationRate = kDefaultMutationRate;
-    self.percentageOfOrganismsThatReproduce = kDefaultPercentageOfOrganismsThatReproduce;
-    self.percentageOfOrganismsThatSurvive = kDefaultPercentageOfOrganismsThatSurvive;
+    self.reproductionPercentage = kDefaultReproductionPercentage;
+    self.elitismPercentage = kDefaultElitismPercentage;
 
     return self;
 }
@@ -37,7 +40,7 @@ static CGFloat const kDefaultPercentageOfOrganismsThatSurvive = 0.10;
 
 #pragma mark - Generation cycle
 
-- (void)processNextGeneration {
+- (void)proceedWithSelection {
     NSParameterAssert(self.delegate);
 
     // By now our delegate should have evaluated the fitness for our population, so let's sort
@@ -47,14 +50,6 @@ static CGFloat const kDefaultPercentageOfOrganismsThatSurvive = 0.10;
     // The number of mates is the percentage of our total organisms that will get a chance to reproduce.
     NSInteger numberOfMates = [self calculateNumberOfMates];
 
-    // Some of these organisms will get a chance to live on to the next generation and have another chance
-    // at reproducing.
-    NSInteger numberOfOrganismsSurviving = [self calculateNumberOfOrganismsSurviving];
-
-    // The number of children that are created is the difference between our population count and the
-    // previously calculated number of organisms that will survive until the next generation.
-    NSInteger numberOfChildren = [self calculateNumberOfOffspringFromSurvivors:numberOfOrganismsSurviving];
-
     // TODO: The organisms selected to breed and survive to the next population should be randomly selected from
     // the entire population, with a stong bias towards fitness. Currently only the fittest x% are selected for breeding
     // and survival, which is a more optimal but less realistic approach. Sometimes very fit organisms are just unlucky,
@@ -63,19 +58,27 @@ static CGFloat const kDefaultPercentageOfOrganismsThatSurvive = 0.10;
     // Get the most fit organisms from our population that we just sorted.
     NSArray *fittestOrganisms = [sortedOrganisms subarrayWithRange:NSMakeRange(0, numberOfMates)];
 
+    // Some of these organisms will get a chance to live on to the next generation and have another chance
+    // at reproducing.
+    NSInteger numberOfSurvivors = [self calculateNumberOfOrganismsSurviving];
+
+    // The number of children that are created is the difference between our population count and the
+    // previously calculated number of organisms that will survive until the next generation.
+    NSInteger numberOfChildren = [self calculateNumberOfOffspringFromSurvivors:numberOfSurvivors];
+
     // Pass these organisms to our function that generates a given number of children randomly from these parents.
     NSArray *offspring = [self generateOffspringFromOrganisms:fittestOrganisms count:numberOfChildren];
 
     // From the pool of the fittest parents, get the lucky ones that will live on to the next generation.
-    NSArray *survivors = [self survivorsToNextGenerationWithCandidates:fittestOrganisms count:numberOfOrganismsSurviving];
+    NSArray *survivors = [self survivorsToNextGenerationWithCandidates:fittestOrganisms count:numberOfSurvivors];
 
     // Build our complete next generation of organisms, including the parents that will live on to the next
     // generation, as well as their children - then shuffle the list to avoid any ordering bias.
     NSArray *nextGeneration = [self shuffleOrganisms:[survivors arrayByAddingObjectsFromArray:offspring]];
 
     // Pass the information back to our delegate now that the population has completed a generation.
-    if ([self.delegate respondsToSelector:@selector(population:didCompetedGeneration:fittestOrganisms:offspring:completeNextGeneration:)]) {
-        [self.delegate population:self.population didCompetedGeneration:self.currentGeneration fittestOrganisms:fittestOrganisms offspring:offspring completeNextGeneration:nextGeneration];
+    if ([self.delegate respondsToSelector:@selector(evolutionManager:didCompetedGeneration:selectedOrganisms:offspring:nextGeneration:)]) {
+        [self.delegate evolutionManager:self didCompetedGeneration:self.currentGeneration selectedOrganisms:fittestOrganisms offspring:offspring nextGeneration:nextGeneration];
     }
 
     // Create a new population from the next generation.
@@ -102,11 +105,11 @@ static CGFloat const kDefaultPercentageOfOrganismsThatSurvive = 0.10;
 }
 
 - (NSInteger)calculateNumberOfMates {
-    return (NSInteger)round(self.population.organisms.count * self.percentageOfOrganismsThatReproduce);
+    return (NSInteger)round(self.population.organisms.count * self.reproductionPercentage);
 }
 
 - (NSInteger)calculateNumberOfOrganismsSurviving {
-    return (NSInteger)round(self.population.organisms.count * self.percentageOfOrganismsThatSurvive);
+    return (NSInteger)round(self.population.organisms.count * self.elitismPercentage);
 }
 
 - (NSInteger)calculateNumberOfOffspringFromSurvivors:(NSInteger)survivorCount {
@@ -166,16 +169,16 @@ static CGFloat const kDefaultPercentageOfOrganismsThatSurvive = 0.10;
 
 #pragma mark - Setters for customizable / optional simulation params
 
-- (void)setPercentageOfOrganismsThatReproduce:(CGFloat)percentageOfOrganismsThatReproduce {
+- (void)setReproductionPercentage:(CGFloat)percentageOfOrganismsThatReproduce {
     NSParameterAssert(percentageOfOrganismsThatReproduce >= 0.0 && percentageOfOrganismsThatReproduce <= 1.0);
 
-    _percentageOfOrganismsThatReproduce = percentageOfOrganismsThatReproduce;
+    _reproductionPercentage = percentageOfOrganismsThatReproduce;
 }
 
-- (void)setPercentageOfOrganismsThatSurvive:(CGFloat)percentageOfOrganismsThatSurvive {
+- (void)setElitismPercentage:(CGFloat)percentageOfOrganismsThatSurvive {
     NSParameterAssert(percentageOfOrganismsThatSurvive >= 0.0 && percentageOfOrganismsThatSurvive < 1.0);
 
-    _percentageOfOrganismsThatSurvive = percentageOfOrganismsThatSurvive;
+    _elitismPercentage = percentageOfOrganismsThatSurvive;
 }
 
 - (void)setMutationRate:(CGFloat)mutationRate {

@@ -68,7 +68,7 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
 
 - (void)continueWithNextGeneration {
     [self evaluateFitnessForPopulation:self.evolutionManager.population];
-    [self.evolutionManager processNextGeneration];
+    [self.evolutionManager proceedWithSelection];
 }
 
 - (void)evaluateFitnessForPopulation:(Population *)population {
@@ -99,9 +99,9 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
 
 #pragma mark - Evolution delegate
 
-- (void)population:(Population *)population didCompetedGeneration:(NSUInteger)generation fittestOrganisms:(NSArray *)fittestOrganisms offspring:(NSArray *)offspring completeNextGeneration:(NSArray *)nextGeneration {
-    // Get the fittest organism for this generation, which will be the first object in the fittest organisms array.
-    Organism *fittestOrganism = [fittestOrganisms firstObject];
+- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation selectedOrganisms:(NSArray *)selectedOrganisms offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration {
+    // Get the fittest organism for this generation, which will be the first object in the selected organisms array.
+    Organism *fittestOrganism = [selectedOrganisms firstObject];
 
     // Get the string representation of the genome.
     NSString *genomeString = fittestOrganism.genome.sequence;

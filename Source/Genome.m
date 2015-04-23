@@ -49,17 +49,26 @@
 
         // Determine if we should mutate this or not.
         NSInteger random = [Random randomIntegerFromMin:1 toMax:100];
-        BOOL shouldMutateChar = random < convertedMutationRate;
+        BOOL shouldMutateGene = random <= convertedMutationRate;
 
         // If we should, get a random character from the set of possible characters for this genome and
-        // replace the current character with it. NOTE: There is a chance the newly selected random character
-        // happens to be the same as the current character, which we are currently leaving as a possibility.
-        if (shouldMutateChar) {
-            NSInteger randomIndex = [Random randomIntegerFromMin:0 toMax:self.domain.length - 1];
-            unichar randomCharInSet = [self.domain characterAtIndex:randomIndex];
-            NSString *replacementString = [NSString stringWithFormat:@"%C", randomCharInSet];
+        // replace the current character with it.
+        if (shouldMutateGene) {
+            BOOL keepSearching = YES;
+            unichar oldGene = [self.sequence characterAtIndex:geneIndex];
 
-            self.sequence = [self.sequence stringByReplacingCharactersInRange:NSMakeRange(geneIndex, 1) withString:replacementString];
+            // We need to keep trying until we actually get a distinct random new gene.
+            while (keepSearching) {
+                NSInteger randomIndex = [Random randomIntegerFromMin:0 toMax:self.domain.length - 1];
+                unichar newGene = [self.domain characterAtIndex:randomIndex];
+
+                if (newGene != oldGene) {
+                    NSString *replacementGene = [NSString stringWithFormat:@"%C", newGene];
+                    self.sequence = [self.sequence stringByReplacingCharactersInRange:NSMakeRange(geneIndex, 1) withString:replacementGene];
+
+                    keepSearching = NO;
+                }
+            }
         }
     }
 }

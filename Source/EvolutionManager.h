@@ -10,10 +10,12 @@
 #import "Population.h"
 #import "Random.h"
 
+@class EvolutionManager;
+
 @protocol EvolutionDelegate <NSObject>
 
 @required
-- (void)population:(Population *)population didCompetedGeneration:(NSUInteger)generation fittestOrganisms:(NSArray *)fittestOrganisms offspring:(NSArray *)offspring completeNextGeneration:(NSArray *)nextGeneration;
+- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation selectedOrganisms:(NSArray *)selectedOrganisms offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration;
 
 @end
 
@@ -25,12 +27,12 @@
 
 @property (nonatomic) NSUInteger currentGeneration;
 
-@property (nonatomic) CGFloat percentageOfOrganismsThatReproduce;
-@property (nonatomic) CGFloat percentageOfOrganismsThatSurvive;
+@property (nonatomic) CGFloat reproductionPercentage;
+@property (nonatomic) CGFloat elitismPercentage;
 @property (nonatomic) CGFloat mutationRate;
 
 - (instancetype)initWithPopulation:(Population *)population;
 
-- (void)processNextGeneration;
+- (void)proceedWithSelection;
 
 @end

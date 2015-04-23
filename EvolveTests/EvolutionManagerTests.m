@@ -100,7 +100,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 - (void)testCalcuateNumberOfMates {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
         CGFloat reproductionRate = [Random randomIntegerFromMin:1 toMax:100] / 100.0;
-        _testManager.percentageOfOrganismsThatReproduce = reproductionRate;
+        _testManager.reproductionPercentage = reproductionRate;
 
         NSInteger numberOfMates = [_testManager calculateNumberOfMates];
 
@@ -111,7 +111,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 - (void)testCalcuateNumberOfSurvivors {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
         CGFloat survivalRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
-        _testManager.percentageOfOrganismsThatSurvive = survivalRate;
+        _testManager.elitismPercentage = survivalRate;
 
         NSInteger numberOfSurvivors = [_testManager calculateNumberOfOrganismsSurviving];
 
@@ -128,11 +128,11 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     }
 }
 
-- (void)testProcessNextGeneration {
+- (void)testProceedWithSelection {
     for (NSInteger i = 1; i < kEvolutionManagerTestIterations; i++) {
         NSInteger beforeOrganismCount = _testManager.population.organisms.count;
 
-        [_testManager processNextGeneration];
+        [_testManager proceedWithSelection];
 
         NSInteger afterOrganismCount = _testManager.population.organisms.count;
 
@@ -141,17 +141,13 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     }
 }
 
-- (void)testProcessNextGenerationWithoutDelegate {
+- (void)testProceedWithSelectionWithoutDelegate {
     void (^expressionBlock)() = ^{
         _testManager.delegate = nil;
-        [_testManager processNextGeneration];
+        [_testManager proceedWithSelection];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
-}
-
-- (void)population:(Population *)population didCompetedGeneration:(NSUInteger)generation fittestOrganisms:(NSArray *)fittestOrganisms offspring:(NSArray *)offspring completeNextGeneration:(NSArray *)nextGeneration {
-
 }
 
 - (void)testSetters {
@@ -160,19 +156,19 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
         CGFloat randomSurvivalRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
         CGFloat randomMutationRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
 
-        _testManager.percentageOfOrganismsThatReproduce = randomReproductionRate;
-        _testManager.percentageOfOrganismsThatSurvive = randomSurvivalRate;
+        _testManager.reproductionPercentage = randomReproductionRate;
+        _testManager.elitismPercentage = randomSurvivalRate;
         _testManager.mutationRate = randomMutationRate;
 
-        XCTAssertEqual(_testManager.percentageOfOrganismsThatReproduce, randomReproductionRate);
-        XCTAssertEqual(_testManager.percentageOfOrganismsThatSurvive, randomSurvivalRate);
+        XCTAssertEqual(_testManager.reproductionPercentage, randomReproductionRate);
+        XCTAssertEqual(_testManager.elitismPercentage, randomSurvivalRate);
         XCTAssertEqual(_testManager.mutationRate, randomMutationRate);
     }
 }
 
 - (void)testInvalidReproductionRate {
     void (^expressionBlock)() = ^{
-        _testManager.percentageOfOrganismsThatReproduce = 1.1;
+        _testManager.reproductionPercentage = 1.1;
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -180,7 +176,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 
 - (void)testInvalidSurvivalRate {
     void (^expressionBlock)() = ^{
-        _testManager.percentageOfOrganismsThatSurvive = 1.0;
+        _testManager.elitismPercentage = 1.0;
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -213,5 +209,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
         XCTAssertEqual(survivors.count, randomCount);
     }
 }
+
+- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation selectedOrganisms:(NSArray *)selectedOrganisms offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration{}
 
 @end
