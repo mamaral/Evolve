@@ -1,6 +1,6 @@
 ##Evolve
 
-A customizable evolution simulation engine written in Objective-C.
+An Evolution Simulation Engine written in Objective-C.
 
 [![License](https://img.shields.io/cocoapods/l/Evolve.svg)](http://doge.mit-license.org) [![Build Status](https://img.shields.io/travis/mamaral/Evolve.svg)](https://travis-ci.org/mamaral/Evolve/) ![Badge w/ Version](https://img.shields.io/cocoapods/v/Evolve.svg)
 
