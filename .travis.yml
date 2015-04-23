@@ -1,3 +1,7 @@
 language: objective-c
+xcode_workspace: Evolve.xcworkspace
+xcode_scheme: EvolveTests
+xcode_sdk: iphonesimulator
+sudo: false
 script:
-  - xctool -project Evolve.xcodeproj -sdk iphonesimulator -scheme Evolve build
+ - xcodebuild -workspace Evolve.xcworkspace -scheme EvolveTests -sdk iphonesimulator build test
