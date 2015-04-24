@@ -208,7 +208,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 
 - (void)testSetters {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
-        NSUInteger randomTournamentSize = [Random randomIntegerFromMin:2 toMax:99];
+        NSUInteger randomTournamentSize = [Random randomIntegerFromMin:2 toMax:10];
         CGFloat randomSurvivalRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
         CGFloat randomMutationRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
 
