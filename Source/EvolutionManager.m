@@ -32,7 +32,7 @@ static NSInteger const kDefaultTournamentSize = 2;
     // Set our defaults.
     self.mutationRate = kDefaultMutationRate;
     self.elitismPercentage = kDefaultElitismPercentage;
-    self.tournamentSize = kDefaultTournamentSize;
+    self.tournamentSize = self.population.organisms.count > 3 ? kDefaultTournamentSize : 1;
 
     return self;
 }
@@ -40,7 +40,7 @@ static NSInteger const kDefaultTournamentSize = 2;
 
 #pragma mark - Selection
 
-- (void)proceedWithSelection {
+- (void)proceedWithSelectionAndBreeding {
     NSParameterAssert(self.delegate);
 
     // Get the starting organisms for this generation, and also get a copy of these organisms
@@ -187,7 +187,7 @@ static NSInteger const kDefaultTournamentSize = 2;
 #pragma mark - Setters for customizable / optional simulation params
 
 - (void)setTournamentSize:(NSUInteger)tournamentSize {
-    NSParameterAssert(tournamentSize > 0 && tournamentSize < self.population.organisms.count / 2);
+    NSParameterAssert(tournamentSize > 0 && tournamentSize <= self.population.organisms.count / 2);
 
     _tournamentSize = tournamentSize;
 }

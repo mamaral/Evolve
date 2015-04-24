@@ -68,7 +68,7 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
 
 - (void)continueWithNextGeneration {
     [self evaluateFitnessForPopulation:self.evolutionManager.population];
-    [self.evolutionManager proceedWithSelection];
+    [self.evolutionManager proceedWithSelectionAndBreeding];
 }
 
 - (void)evaluateFitnessForPopulation:(Population *)population {

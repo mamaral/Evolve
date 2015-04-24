@@ -67,7 +67,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
         NSInteger randomLength = [Random randomIntegerFromMin:1 toMax:10];
         NSString *domain = @"abcd";
         Population *population = [[Population alloc] initRandomPopulationWithSize:randomSize geneSequenceLength:randomLength genomeDomain:domain];
-
+        NSLog(@"%@", @(randomSize));
         EvolutionManager *manager = [[EvolutionManager alloc] initWithPopulation:population];
 
         XCTAssertNotNil(manager);
@@ -186,7 +186,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     for (NSInteger i = 1; i < kEvolutionManagerTestIterations; i++) {
         NSInteger beforeOrganismCount = _testManager.population.organisms.count;
 
-        [_testManager proceedWithSelection];
+        [_testManager proceedWithSelectionAndBreeding];
 
         NSInteger afterOrganismCount = _testManager.population.organisms.count;
 
@@ -198,7 +198,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 - (void)testProceedWithSelectionWithoutDelegate {
     void (^expressionBlock)() = ^{
         _testManager.delegate = nil;
-        [_testManager proceedWithSelection];
+        [_testManager proceedWithSelectionAndBreeding];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);

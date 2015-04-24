@@ -33,6 +33,6 @@
 
 - (instancetype)initWithPopulation:(Population *)population;
 
-- (void)proceedWithSelection;
+- (void)proceedWithSelectionAndBreeding;
 
 @end
