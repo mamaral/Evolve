@@ -28,6 +28,7 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
     self.fittestOrganismLabel.center = self.view.center;
     self.fittestOrganismLabel.textAlignment = NSTextAlignmentCenter;
     self.fittestOrganismLabel.numberOfLines = 2;
+    self.fittestOrganismLabel.font = [UIFont fontWithName:@"Menlo-Bold" size:14];
     [self.view addSubview:self.fittestOrganismLabel];
 
     // Add a nav button to trigger starting the simulation.
