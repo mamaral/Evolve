@@ -28,6 +28,7 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
     self.fittestOrganismLabel.center = self.view.center;
     self.fittestOrganismLabel.textAlignment = NSTextAlignmentCenter;
     self.fittestOrganismLabel.numberOfLines = 2;
+    self.fittestOrganismLabel.font = [UIFont fontWithName:@"Menlo-Bold" size:14];
     [self.view addSubview:self.fittestOrganismLabel];
 
     // Add a nav button to trigger starting the simulation.
@@ -68,7 +69,7 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
 
 - (void)continueWithNextGeneration {
     [self evaluateFitnessForPopulation:self.evolutionManager.population];
-    [self.evolutionManager proceedWithSelection];
+    [self.evolutionManager proceedWithSelectionAndBreeding];
 }
 
 - (void)evaluateFitnessForPopulation:(Population *)population {
@@ -99,10 +100,7 @@ static NSTimeInterval const kTimeIntervalPerGeneration = 0.05;
 
 #pragma mark - Evolution delegate
 
-- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation selectedOrganisms:(NSArray *)selectedOrganisms offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration {
-    // Get the fittest organism for this generation, which will be the first object in the selected organisms array.
-    Organism *fittestOrganism = [selectedOrganisms firstObject];
-
+- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation fittestOrganism:(Organism *)fittestOrganism offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration {
     // Get the string representation of the genome.
     NSString *genomeString = fittestOrganism.genome.sequence;
 
