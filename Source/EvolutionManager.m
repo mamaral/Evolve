@@ -8,9 +8,9 @@
 
 #import "EvolutionManager.h"
 
-static CGFloat const kDefaultReproductionPercentage = 0.33;
 static CGFloat const kDefaultMutationRate = 0.05;
 static CGFloat const kDefaultElitismPercentage = 0.10;
+static NSInteger const kDefaultTournamentSize = 2;
 
 @implementation EvolutionManager
 
@@ -31,54 +31,40 @@ static CGFloat const kDefaultElitismPercentage = 0.10;
 
     // Set our defaults.
     self.mutationRate = kDefaultMutationRate;
-    self.reproductionPercentage = kDefaultReproductionPercentage;
     self.elitismPercentage = kDefaultElitismPercentage;
+    self.tournamentSize = kDefaultTournamentSize;
 
     return self;
 }
 
 
-#pragma mark - Generation cycle
+#pragma mark - Selection
 
 - (void)proceedWithSelection {
     NSParameterAssert(self.delegate);
 
-    // By now our delegate should have evaluated the fitness for our population, so let's sort
-    // it by fitness - the fittest first.
-    NSArray *sortedOrganisms = [self sortOrganismsByFitness:self.population.organisms];
+    // Get the starting organisms for this generation, and also get a copy of these organisms
+    // sorted.
+    NSArray *startingOrganisms = self.population.organisms;
+    NSArray *sortedOrganisms = [self sortOrganismsByFitness:startingOrganisms];
 
-    // The number of mates is the percentage of our total organisms that will get a chance to reproduce.
-    NSInteger numberOfMates = [self calculateNumberOfMates];
+    // Calculate the number of elite organisms that will live on to the next generation,
+    // and get that number from the sorted list of organisms.
+    NSInteger numberOfElites = [self calculateNumberOfElites];
+    NSArray *elites = [sortedOrganisms subarrayWithRange:NSMakeRange(0, numberOfElites)];
 
-    // TODO: The organisms selected to breed and survive to the next population should be randomly selected from
-    // the entire population, with a stong bias towards fitness. Currently only the fittest x% are selected for breeding
-    // and survival, which is a more optimal but less realistic approach. Sometimes very fit organisms are just unlucky,
-    // and sometimes the nerd gets the girl...
+    // Calculate the number of children we need to generate for the next generation, and pass
+    // the unsorted list of all organisms to the method that will generate them.
+    NSInteger numberOfChildren = [self calculateNumberOfOffspringFromEliteCount:numberOfElites];
+    NSArray *offspring = [self generateOffspringFromOrganisms:startingOrganisms count:numberOfChildren];
 
-    // Get the most fit organisms from our population that we just sorted.
-    NSArray *fittestOrganisms = [sortedOrganisms subarrayWithRange:NSMakeRange(0, numberOfMates)];
-
-    // Some of these organisms will get a chance to live on to the next generation and have another chance
-    // at reproducing.
-    NSInteger numberOfSurvivors = [self calculateNumberOfOrganismsSurviving];
-
-    // The number of children that are created is the difference between our population count and the
-    // previously calculated number of organisms that will survive until the next generation.
-    NSInteger numberOfChildren = [self calculateNumberOfOffspringFromSurvivors:numberOfSurvivors];
-
-    // Pass these organisms to our function that generates a given number of children randomly from these parents.
-    NSArray *offspring = [self generateOffspringFromOrganisms:fittestOrganisms count:numberOfChildren];
-
-    // From the pool of the fittest parents, get the lucky ones that will live on to the next generation.
-    NSArray *survivors = [self survivorsToNextGenerationWithCandidates:fittestOrganisms count:numberOfSurvivors];
-
-    // Build our complete next generation of organisms, including the parents that will live on to the next
-    // generation, as well as their children - then shuffle the list to avoid any ordering bias.
-    NSArray *nextGeneration = [self shuffleOrganisms:[survivors arrayByAddingObjectsFromArray:offspring]];
+    // Build our complete next generation of organisms, including the elite organisms that will live on to the next
+    // generation, as well as the children - then shuffle the list to avoid any ordering bias.
+    NSArray *nextGeneration = [self shuffleOrganisms:[elites arrayByAddingObjectsFromArray:offspring]];
 
     // Pass the information back to our delegate now that the population has completed a generation.
-    if ([self.delegate respondsToSelector:@selector(evolutionManager:didCompetedGeneration:selectedOrganisms:offspring:nextGeneration:)]) {
-        [self.delegate evolutionManager:self didCompetedGeneration:self.currentGeneration selectedOrganisms:fittestOrganisms offspring:offspring nextGeneration:nextGeneration];
+    if ([self.delegate respondsToSelector:@selector(evolutionManager:didCompetedGeneration:fittestOrganism:offspring:nextGeneration:)]) {
+        [self.delegate evolutionManager:self didCompetedGeneration:self.currentGeneration fittestOrganism:[self fittestOrganismForCurrentGeneration] offspring:offspring nextGeneration:nextGeneration];
     }
 
     // Create a new population from the next generation.
@@ -87,6 +73,9 @@ static CGFloat const kDefaultElitismPercentage = 0.10;
     // Increment the current generation count.
     self.currentGeneration++;
 }
+
+
+#pragma mark - Organism Fitness
 
 - (NSArray *)sortOrganismsByFitness:(NSArray *)organisms {
     return [organisms sortedArrayUsingComparator:^NSComparisonResult(Organism *orgA, Organism *orgB) {
@@ -104,21 +93,24 @@ static CGFloat const kDefaultElitismPercentage = 0.10;
     }];
 }
 
-- (NSInteger)calculateNumberOfMates {
-    return (NSInteger)round(self.population.organisms.count * self.reproductionPercentage);
+- (Organism *)fittestOrganismForCurrentGeneration {
+    Organism *fittestOrganism = [self.population.organisms firstObject];
+    NSInteger highestFitness = fittestOrganism.fitness;
+
+    for (Organism *organism in self.population.organisms) {
+        if (organism.fitness > highestFitness) {
+            highestFitness = organism.fitness;
+            fittestOrganism = organism;
+        }
+    }
+
+    return fittestOrganism;
 }
 
-- (NSInteger)calculateNumberOfOrganismsSurviving {
-    return (NSInteger)round(self.population.organisms.count * self.elitismPercentage);
-}
 
-- (NSInteger)calculateNumberOfOffspringFromSurvivors:(NSInteger)survivorCount {
-    NSParameterAssert(survivorCount < self.population.organisms.count);
+#pragma mark - Selection
 
-    return self.population.organisms.count - survivorCount;
-}
-
-- (NSArray *)generateOffspringFromOrganisms:(NSArray *)parents count:(NSInteger)offspringCount {
+- (NSArray *)generateOffspringFromOrganisms:(NSArray *)parents count:(NSUInteger)offspringCount {
     NSParameterAssert(parents.count > 1);
 
     // Create our initially-empty offspring array.
@@ -126,21 +118,18 @@ static CGFloat const kDefaultElitismPercentage = 0.10;
 
     // We want to continue adding children until our predetermined count is met.
     while (offspring.count < offspringCount) {
+        NSUInteger randomIndex1 = [Random randomIntegerFromMin:0 toMax:parents.count - self.tournamentSize - 1];
+        NSUInteger randomIndex2 = [Random randomIntegerFromMin:0 toMax:parents.count - self.tournamentSize - 1];
+        NSArray *tournament1Candidates = [parents subarrayWithRange:NSMakeRange(randomIndex1, self.tournamentSize)];
+        NSArray *tournament2Candidates = [parents subarrayWithRange:NSMakeRange(randomIndex2, self.tournamentSize)];
 
-        // Choose two random organisms to be the parents, ensuring we don't choose the same
-        // organism twice as this simulates sexual reproduction, rather than asexual reproduction.
-        NSInteger randomOrganismIndexA = [Random randomIntegerFromMin:0 toMax:parents.count - 1];
-        NSInteger randomOrganismIndexB = [Random randomIntegerFromMin:0 toMax:parents.count - 1];
+        Organism *parent1 = [self winnerOfTournamentSelectionWithCandidates:tournament1Candidates];
+        Organism *parent2 = [self winnerOfTournamentSelectionWithCandidates:tournament2Candidates];
 
-        // If the two random indexes are the same, skip this iteration.
-        if (randomOrganismIndexA == randomOrganismIndexB) {
+        if (parent1 == parent2) {
             continue;
         }
 
-        // Take these two parents and... well son... you see... When a mommy and
-        // a daddy love eachother very much...
-        Organism *parent1 = parents[randomOrganismIndexA];
-        Organism *parent2 = parents[randomOrganismIndexB];
         Organism *child = [Organism offspringFromParent1:parent1 parent2:parent2 mutationRate:self.mutationRate];
 
         // Add this child to our array of offspring.
@@ -150,7 +139,22 @@ static CGFloat const kDefaultElitismPercentage = 0.10;
     return offspring;
 }
 
-- (NSArray *)survivorsToNextGenerationWithCandidates:(NSArray *)candidates count:(NSInteger)count {
+- (Organism *)winnerOfTournamentSelectionWithCandidates:(NSArray *)candidates {
+    NSParameterAssert(candidates.count > 0);
+
+    Organism *fittestCandidate = [candidates firstObject];;
+
+    for (NSInteger i = 1; i < candidates.count; i++) {
+        Organism *candidate = candidates[i];
+        if (candidate.fitness > fittestCandidate.fitness) {
+            fittestCandidate = candidate;
+        }
+    }
+
+    return fittestCandidate;
+}
+
+- (NSArray *)survivorsToNextGenerationWithCandidates:(NSArray *)candidates count:(NSUInteger)count {
     // Randomly choose the defined count of parents to return.
     NSMutableArray *potentialSurvivors = [NSMutableArray arrayWithArray:candidates];
     NSMutableArray *survivors = [NSMutableArray arrayWithCapacity:count];
@@ -167,12 +171,25 @@ static CGFloat const kDefaultElitismPercentage = 0.10;
 }
 
 
+#pragma mark - Calculations
+
+- (NSInteger)calculateNumberOfElites {
+    return (NSInteger)round(self.population.organisms.count * self.elitismPercentage);
+}
+
+- (NSInteger)calculateNumberOfOffspringFromEliteCount:(NSInteger)eliteCount {
+    NSParameterAssert(eliteCount < self.population.organisms.count);
+
+    return self.population.organisms.count - eliteCount;
+}
+
+
 #pragma mark - Setters for customizable / optional simulation params
 
-- (void)setReproductionPercentage:(CGFloat)percentageOfOrganismsThatReproduce {
-    NSParameterAssert(percentageOfOrganismsThatReproduce >= 0.0 && percentageOfOrganismsThatReproduce <= 1.0);
+- (void)setTournamentSize:(NSUInteger)tournamentSize {
+    NSParameterAssert(tournamentSize > 0 && tournamentSize < self.population.organisms.count / 2);
 
-    _reproductionPercentage = percentageOfOrganismsThatReproduce;
+    _tournamentSize = tournamentSize;
 }
 
 - (void)setElitismPercentage:(CGFloat)percentageOfOrganismsThatSurvive {

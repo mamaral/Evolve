@@ -16,11 +16,13 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 @interface EvolutionManager (Testing)
 
 - (NSArray *)sortOrganismsByFitness:(NSArray *)organisms;
-- (NSInteger)calculateNumberOfMates;
-- (NSInteger)calculateNumberOfOrganismsSurviving;
-- (NSInteger)calculateNumberOfOffspringFromSurvivors:(NSInteger)survivorCount;
+- (Organism *)fittestOrganismForCurrentGeneration;
 - (NSArray *)generateOffspringFromOrganisms:(NSArray *)parents count:(NSInteger)offspringCount;
+- (Organism *)winnerOfTournamentSelectionWithCandidates:(NSArray *)candidates;
 - (NSArray *)survivorsToNextGenerationWithCandidates:(NSArray *)candidates count:(NSInteger)count;
+
+- (NSInteger)calculateNumberOfElites;
+- (NSInteger)calculateNumberOfOffspringFromEliteCount:(NSInteger)eliteCount;
 
 @end
 
@@ -56,6 +58,9 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     [super tearDown];
 }
 
+
+#pragma mark - Initialization
+
 - (void)testInitWithPopulation {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
         NSInteger randomSize = [Random randomIntegerFromMin:2 toMax:100];
@@ -78,6 +83,9 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
 }
 
+
+#pragma mark - Sorting
+
 - (void)testSortOrganismsByFitness {
     NSInteger minFitness = 0;
     NSInteger maxFitness = 100;
@@ -97,23 +105,66 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     }
 }
 
-- (void)testCalcuateNumberOfMates {
-    for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
-        CGFloat reproductionRate = [Random randomIntegerFromMin:1 toMax:100] / 100.0;
-        _testManager.reproductionPercentage = reproductionRate;
-
-        NSInteger numberOfMates = [_testManager calculateNumberOfMates];
-
-        XCTAssertEqual(numberOfMates, round(_testManager.population.organisms.count * reproductionRate));
-    }
+- (void)testSortOrganismsByFitnessWithEmptyArray {
+    NSArray *sortedOrganisms = [_testManager sortOrganismsByFitness:@[]];
+    XCTAssertNotNil(sortedOrganisms);
 }
 
-- (void)testCalcuateNumberOfSurvivors {
+- (void)testSortOrganismsByFitnessWithNilArray {
+    NSArray *sortedOrganisms = [_testManager sortOrganismsByFitness:nil];
+    XCTAssertNil(sortedOrganisms);
+}
+
+
+#pragma mark - Getting fittest organism
+
+- (void)testGetFittestOrganism {
+    Organism *weakerA = [[Organism alloc] initWithGenome:[Genome new]];
+    weakerA.fitness = [Random randomIntegerFromMin:1 toMax:100];
+
+    Organism *weakerB = [[Organism alloc] initWithGenome:[Genome new]];
+    weakerB.fitness = weakerA.fitness + 1;
+
+    Organism *weakerC = [[Organism alloc] initWithGenome:[Genome new]];
+    weakerC.fitness = weakerA.fitness;
+
+    Organism *fittest = [[Organism alloc] initWithGenome:[Genome new]];
+    fittest.fitness = weakerB.fitness + 1;
+
+    Population *population = [[Population alloc] initWithOrganisms:@[weakerA, weakerB, fittest, weakerC]];
+    _testManager.population = population;
+
+    Organism *generatedFittest = [_testManager fittestOrganismForCurrentGeneration];
+
+    XCTAssertNotNil(fittest);
+    XCTAssertEqualObjects(generatedFittest, fittest);
+}
+
+- (void)testGetFittestOrganismFromEmptySet {
+    _testManager.population.organisms = @[];
+
+    Organism *generatedFittest = [_testManager fittestOrganismForCurrentGeneration];
+
+    XCTAssertNil(generatedFittest);
+}
+
+- (void)testGetFittestOrganismFromNilSet {
+    _testManager.population.organisms = nil;
+
+    Organism *generatedFittest = [_testManager fittestOrganismForCurrentGeneration];
+
+    XCTAssertNil(generatedFittest);
+}
+
+
+#pragma mark - Calculations
+
+- (void)testCalcuateNumberOfElites {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
         CGFloat survivalRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
         _testManager.elitismPercentage = survivalRate;
 
-        NSInteger numberOfSurvivors = [_testManager calculateNumberOfOrganismsSurviving];
+        NSInteger numberOfSurvivors = [_testManager calculateNumberOfElites];
 
         XCTAssertEqual(numberOfSurvivors, round(_testManager.population.organisms.count * survivalRate));
     }
@@ -122,11 +173,14 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 - (void)testCalculateNumberOfOffspring {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
         NSInteger randomSurvivorCount = [Random randomIntegerFromMin:0 toMax:_testManager.population.organisms.count - 1];
-        NSInteger numberOfOffspring = [_testManager calculateNumberOfOffspringFromSurvivors:randomSurvivorCount];
+        NSInteger numberOfOffspring = [_testManager calculateNumberOfOffspringFromEliteCount:randomSurvivorCount];
 
         XCTAssertEqual(numberOfOffspring, _testManager.population.organisms.count - randomSurvivorCount);
     }
 }
+
+
+#pragma mark - Selection
 
 - (void)testProceedWithSelection {
     for (NSInteger i = 1; i < kEvolutionManagerTestIterations; i++) {
@@ -150,31 +204,34 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
 }
 
+
+#pragma mark - Setters
+
 - (void)testSetters {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
-        CGFloat randomReproductionRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
+        NSUInteger randomTournamentSize = [Random randomIntegerFromMin:2 toMax:99];
         CGFloat randomSurvivalRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
         CGFloat randomMutationRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
 
-        _testManager.reproductionPercentage = randomReproductionRate;
+        _testManager.tournamentSize = randomTournamentSize;
         _testManager.elitismPercentage = randomSurvivalRate;
         _testManager.mutationRate = randomMutationRate;
 
-        XCTAssertEqual(_testManager.reproductionPercentage, randomReproductionRate);
+        XCTAssertEqual(_testManager.tournamentSize, randomTournamentSize);
         XCTAssertEqual(_testManager.elitismPercentage, randomSurvivalRate);
         XCTAssertEqual(_testManager.mutationRate, randomMutationRate);
     }
 }
 
-- (void)testInvalidReproductionRate {
+- (void)testInvalidTournamentSize {
     void (^expressionBlock)() = ^{
-        _testManager.reproductionPercentage = 1.1;
+        _testManager.tournamentSize = 0;
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
 }
 
-- (void)testInvalidSurvivalRate {
+- (void)testInvalidElitismRate {
     void (^expressionBlock)() = ^{
         _testManager.elitismPercentage = 1.0;
     };
@@ -190,6 +247,9 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
 }
 
+
+#pragma mark - Generating offspring
+
 - (void)testGenerateOffspring {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
         NSInteger randomCount = [Random randomIntegerFromMin:2 toMax:100];
@@ -199,6 +259,9 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
         XCTAssertEqual(offspring.count, randomCount);
     }
 }
+
+
+#pragma mark - Survivor 
 
 - (void)testSurvivorsToNextGeneration {
     for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
@@ -210,6 +273,49 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
     }
 }
 
-- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation selectedOrganisms:(NSArray *)selectedOrganisms offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration{}
+
+#pragma mark - Tournament selection
+
+- (void)testTournamentSelection {
+    for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
+        NSInteger randomIndexA = [Random randomIntegerFromMin:0 toMax:_testManager.population.organisms.count - 1];
+        Organism *organismA = _testManager.population.organisms[randomIndexA];
+        organismA.fitness = [Random randomIntegerFromMin:1 toMax:100];
+
+        NSInteger randomIndexB = [Random randomIntegerFromMin:0 toMax:_testManager.population.organisms.count - 1];
+        Organism *organismB = _testManager.population.organisms[randomIndexB];
+        organismB.fitness = [Random randomIntegerFromMin:1 toMax:100];
+
+        Organism *winner = [_testManager winnerOfTournamentSelectionWithCandidates:@[organismA, organismB]];
+
+        XCTAssertNotNil(winner);
+
+        if (organismA.fitness > organismB.fitness || organismA.fitness == organismB.fitness) {
+            XCTAssertEqualObjects(winner, organismA);
+        }
+
+        else {
+            XCTAssertEqualObjects(winner, organismB);
+        }
+    }
+}
+
+- (void)testTournamentSelectionWithoutMinimumCount {
+    void (^expressionBlock)() = ^{
+        __unused Organism *winner = [_testManager winnerOfTournamentSelectionWithCandidates:@[]];
+    };
+
+    XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
+}
+
+- (void)testTournamentSelectionWithNilSet {
+    void (^expressionBlock)() = ^{
+        __unused Organism *winner = [_testManager winnerOfTournamentSelectionWithCandidates:nil];
+    };
+
+    XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
+}
+
+- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation fittestOrganism:(Organism *)fittestOrganism offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration {};
 
 @end

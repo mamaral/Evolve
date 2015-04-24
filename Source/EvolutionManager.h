@@ -15,7 +15,7 @@
 @protocol EvolutionDelegate <NSObject>
 
 @required
-- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation selectedOrganisms:(NSArray *)selectedOrganisms offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration;
+- (void)evolutionManager:(EvolutionManager *)evolutionManager didCompetedGeneration:(NSUInteger)generation fittestOrganism:(Organism *)fittestOrganism offspring:(NSArray *)offspring nextGeneration:(NSArray *)nextGeneration;
 
 @end
 
@@ -27,7 +27,7 @@
 
 @property (nonatomic) NSUInteger currentGeneration;
 
-@property (nonatomic) CGFloat reproductionPercentage;
+@property (nonatomic) NSUInteger tournamentSize;
 @property (nonatomic) CGFloat elitismPercentage;
 @property (nonatomic) CGFloat mutationRate;
 
