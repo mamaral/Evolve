@@ -67,7 +67,6 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
         NSInteger randomLength = [Random randomIntegerFromMin:1 toMax:10];
         NSString *domain = @"abcd";
         Population *population = [[Population alloc] initRandomPopulationWithSize:randomSize geneSequenceLength:randomLength genomeDomain:domain];
-        NSLog(@"%@", @(randomSize));
         EvolutionManager *manager = [[EvolutionManager alloc] initWithPopulation:population];
 
         XCTAssertNotNil(manager);
