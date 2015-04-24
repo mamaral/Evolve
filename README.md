@@ -80,7 +80,7 @@ This could be implemented as such:
 [***Selection***](http://en.wikipedia.org/wiki/Selection_(genetic_algorithm)) is the process by which organisms are chosen for breeding the next generation. In general, the more fit an organism is, the more likely it is to be selected. Once you have established the fitness for all organisms in the population, the selection process is initiated as such:
 
 ```objective-c
-[self.evolutionManager proceedWithSelection];
+[self.evolutionManager proceedWithSelectionAndBreeding];
 ```
 
 This algorithm utilizes a [***tournament selection***](http://en.wikipedia.org/wiki/Tournament_selection) method for choosing organisms to breed. Subsets of the population are chosen at random to *compete* for the chance to breed, with the fittest organism of this subset being selected as a parent. These organisms are not removed from the pool of competitors, and thus it is possible for an organism to parent multiple offspring.
@@ -111,7 +111,7 @@ The probability that a given gene will mutate is determined by the `mutationRate
 
 After the selection and generation of offspring, the `EvolutionManager` calls its required delegate method `evolutionManager:didCompetedGeneration:fittestOrganism:offspring:nextGeneration:`, providing details about the results of the previous generation, and the updated organisms for the next generation. You can use this information for debugging, logging, updating your UI, etc. 
 
-You should use the `completeNextGeneration` parameter to re-evaluate the fitness of your new population, and if there is still something left to be desired you can simply call `proceedWithSelection` again to continue the process through to the next generation. If you've determined that you don't want to continue with the simulation, because some maximal fitness was reached, your population has become stagnant, etc., simply ***don't call*** `proceedWithSelection` again.
+You should use the `completeNextGeneration` parameter to re-evaluate the fitness of your new population, and if there is still something left to be desired you can simply call `proceedWithSelectionAndBreeding` again to continue the process through to the next generation. If you've determined that you don't want to continue with the simulation, because some maximal fitness was reached, your population has become stagnant, etc., simply ***don't call*** `proceedWithSelectionAndBreeding` again.
 
 ## Community
 
