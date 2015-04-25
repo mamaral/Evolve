@@ -61,9 +61,11 @@ This could be implemented as such:
 
 ```objective-c
 - (void)evaluateFitnessForPopulation {
-    for (Organism *organism in self.evolutionManager.population.organisms) {
+    NSArray *organisms = self.evolutionManager.population.organisms;
+
+    for (Organism *organism in organisms) {
         NSString *genomeString = organism.genome.sequence;
-        NSInteger geneSequenceLength = organism.genome.sequence.length;
+        NSInteger geneSequenceLength = genomeString.length;
         NSInteger correctCharacters = 0;
 
         for (NSInteger charIndex = 0; charIndex < geneSequenceLength; charIndex++) {
