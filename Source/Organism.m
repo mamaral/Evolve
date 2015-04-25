@@ -66,7 +66,7 @@
         // Randomly generate a crossover point and combine the parent's genomes there - which will
         // be the child's starting gene sequence.
         case CrossoverMethodOnePoint: {
-            NSInteger crossoverPoint = [Random randomIntegerFromMin:0 toMax:ourGeneSequence.length - 1];
+            NSInteger crossoverPoint = [Random randomIntegerFromMin:1 toMax:ourGeneSequence.length - 2];
             NSString *ourContribution = [ourGeneSequence substringToIndex:crossoverPoint];
             NSString *mateContribution = [mateGeneSequence substringFromIndex:crossoverPoint];
 
