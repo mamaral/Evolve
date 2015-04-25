@@ -13,6 +13,12 @@
 
 static NSInteger const kOrganismTestIterations = 10000;
 
+@interface Organism (Testing)
+
++ (NSRange)generateRangeForTwoPointCrossoverFromLength:(NSUInteger)geneSequenceLength;
+
+@end
+
 @interface OrganismTests : XCTestCase
 
 @end
@@ -36,7 +42,7 @@ static NSInteger const kOrganismTestIterations = 10000;
     NSString *testDomain = @"abcdefg 123456";
 
     for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
-        NSInteger randomLength = [Random randomIntegerFromMin:1 toMax:25];
+        NSInteger randomLength = [Random randomIntegerFromMin:4 toMax:25];
         Organism *organism = [[Organism alloc] initRandomWithGeneSequenceLength:randomLength domain:testDomain];
 
         XCTAssertNotNil(organism);
@@ -97,7 +103,7 @@ static NSInteger const kOrganismTestIterations = 10000;
     for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
         Organism *parent1 = [[Organism alloc] initRandomWithGeneSequenceLength:testGeneSequenceLength domain:testDomain];
         Organism *parent2 = [[Organism alloc] initRandomWithGeneSequenceLength:testGeneSequenceLength domain:testDomain];
-        Organism *offspring = [Organism offspringFromParent1:parent1 parent2:parent2 mutationRate:0.0];
+        Organism *offspring = [parent1 mateWithOrganism:parent2 crossoverMethod:CrossoverMethodOnePoint mutationRate:0.0];
 
         XCTAssertNotNil(offspring);
         XCTAssertNotNil(offspring.genome);
@@ -122,17 +128,9 @@ static NSInteger const kOrganismTestIterations = 10000;
     }
 }
 
-- (void)testGenerateOffspringWithInvalidParent1 {
+- (void)testGenerateOffspringWithInvalidMate {
     void (^expressionBlock)() = ^{
-        __unused Organism *offspring = [Organism offspringFromParent1:nil parent2:[Organism new] mutationRate:0.0];
-    };
-
-    XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
-}
-
-- (void)testGenerateOffspringWithInvalidParent2 {
-    void (^expressionBlock)() = ^{
-        __unused Organism *offspring = [Organism offspringFromParent1:[Organism new] parent2:nil mutationRate:0.0];
+        __unused Organism *offspring = [[Organism new] mateWithOrganism:nil crossoverMethod:CrossoverMethodOnePoint mutationRate:0.0];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -144,7 +142,7 @@ static NSInteger const kOrganismTestIterations = 10000;
         NSInteger testLength = 4;
         Organism *parent1 = [[Organism alloc] initRandomWithGeneSequenceLength:testLength domain:testDomain];
         Organism *parent2 = [[Organism alloc] initRandomWithGeneSequenceLength:testLength domain:testDomain];
-        __unused Organism *offspring = [Organism offspringFromParent1:parent1 parent2:parent2 mutationRate:1.5];
+        __unused Organism *offspring = [parent1 mateWithOrganism:parent2 crossoverMethod:CrossoverMethodOnePoint mutationRate:1.5];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -155,7 +153,7 @@ static NSInteger const kOrganismTestIterations = 10000;
         NSString *testDomain = @"abcd";
         Organism *parent1 = [[Organism alloc] initRandomWithGeneSequenceLength:3 domain:testDomain];
         Organism *parent2 = [[Organism alloc] initRandomWithGeneSequenceLength:4 domain:testDomain];
-        __unused Organism *offspring = [Organism offspringFromParent1:parent1 parent2:parent2 mutationRate:0.0];
+        __unused Organism *offspring = [parent1 mateWithOrganism:parent2 crossoverMethod:CrossoverMethodOnePoint mutationRate:0.0];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
@@ -166,7 +164,37 @@ static NSInteger const kOrganismTestIterations = 10000;
         NSInteger testLength = 4;
         Organism *parent1 = [[Organism alloc] initRandomWithGeneSequenceLength:testLength domain:@"abc"];
         Organism *parent2 = [[Organism alloc] initRandomWithGeneSequenceLength:testLength domain:@"123"];
-        __unused Organism *offspring = [Organism offspringFromParent1:parent1 parent2:parent2 mutationRate:0.0];
+        __unused Organism *offspring = [parent1 mateWithOrganism:parent2 crossoverMethod:CrossoverMethodOnePoint mutationRate:0.0];
+    };
+
+    XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
+}
+
+- (void)testGenerateRangeForTwoPointCrossoverWithMinimumLength {
+    for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
+        NSRange range = [Organism generateRangeForTwoPointCrossoverFromLength:kMinimumGeneSequenceLength];
+
+        XCTAssertEqual(range.location, 1);
+        XCTAssertEqual(range.length, 1);
+    }
+}
+
+- (void)testGenerateRangeForTwoPointCrossoverWithRandomLength {
+    for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
+        NSUInteger randomLength = [Random randomIntegerFromMin:4 toMax:100];
+        NSRange range = [Organism generateRangeForTwoPointCrossoverFromLength:randomLength];
+        NSUInteger lastIndexFromRange = range.location + range.length + 1;
+
+        XCTAssertGreaterThanOrEqual(range.location, 1);
+        XCTAssertGreaterThanOrEqual(range.length, 1);
+        XCTAssertLessThan(lastIndexFromRange, randomLength);
+    }
+}
+
+- (void)testGenerateRangeForTwoPointCrossoverWithInvalidLength {
+    void (^expressionBlock)() = ^{
+        NSInteger randomInvalidLength = [Random randomIntegerFromMin:0 toMax:kMinimumGeneSequenceLength - 1];
+        [Organism generateRangeForTwoPointCrossoverFromLength:randomInvalidLength];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);

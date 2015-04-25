@@ -25,7 +25,7 @@ static NSInteger const kPopulationTestIterations = 10000;
         NSMutableArray *organisms = [NSMutableArray arrayWithCapacity:numberOfOrganisms];
 
         for (NSInteger i = 0; i < numberOfOrganisms; i++) {
-            [organisms addObject:[[Organism alloc] initRandomWithGeneSequenceLength:1 domain:@"abcd"]];
+            [organisms addObject:[[Organism alloc] initRandomWithGeneSequenceLength:4 domain:@"abcd"]];
         }
 
         Population *population = [[Population alloc] initWithOrganisms:organisms];
@@ -40,7 +40,7 @@ static NSInteger const kPopulationTestIterations = 10000;
 - (void)testInitRandom {
     for (NSInteger i = 0; i < kPopulationTestIterations; i++) {
         NSInteger randomSize = [Random randomIntegerFromMin:2 toMax:20];
-        NSInteger randomGeneSequenceLength = [Random randomIntegerFromMin:2 toMax:30];
+        NSInteger randomGeneSequenceLength = [Random randomIntegerFromMin:4 toMax:30];
         NSString *domain = @"abcdefg1234567";
 
         Population *population = [[Population alloc] initRandomPopulationWithSize:randomSize geneSequenceLength:randomGeneSequenceLength genomeDomain:domain];

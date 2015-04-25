@@ -36,22 +36,17 @@
 
 #pragma mark - Reproduction
 
-+ (instancetype)offspringFromParent1:(Organism *)parent1 parent2:(Organism *)parent2 mutationRate:(CGFloat)mutationRate {
-    NSParameterAssert(parent1);
-    NSParameterAssert(parent2);
-    NSParameterAssert([parent1.genome.domain isEqualToString:parent2.genome.domain]);
-    NSParameterAssert(parent1.genome.sequence.length == parent2.genome.sequence.length);
+- (instancetype)mateWithOrganism:(Organism *)mate crossoverMethod:(enum CrossoverMethod)crossoverMethod mutationRate:(CGFloat)mutationRate {
+    NSParameterAssert(mate);
+    NSParameterAssert([self.genome.domain isEqualToString:mate.genome.domain]);
+    NSParameterAssert(self.genome.sequence.length == mate.genome.sequence.length);
     NSParameterAssert(mutationRate >= 0 && mutationRate <= 1);
-    
-    // Randomly generate a crossover point and combine the parent's genomes there - which will
-    // be the child's starting gene sequence.
-    NSInteger crossoverPoint = [Random randomIntegerFromMin:0 toMax:parent1.genome.sequence.length - 1];
-    NSString *parent1Contribution = [parent1.genome.sequence substringToIndex:crossoverPoint];
-    NSString *parent2Contribution = [parent2.genome.sequence substringFromIndex:crossoverPoint];
-    NSString *offspringGeneSequence = [parent1Contribution stringByAppendingString:parent2Contribution];
+
+    // Generate the offspring's gene sequence from ours and our mate's, using the defined crossover method.
+    NSString *offspringGeneSequence = [self generateChildGeneSequenceFromMate:mate crossoverMethod:crossoverMethod];
 
     // Create the child's genome with the parent's same configuration and the crossed over genetic pattern.
-    Genome *childsGenome = [[Genome alloc] initWithGeneSequence:offspringGeneSequence domain:parent1.genome.domain];
+    Genome *childsGenome = [[Genome alloc] initWithGeneSequence:offspringGeneSequence domain:self.genome.domain];
 
     // Tell the genome to handle mutation given the provided mutation rate.
     [childsGenome handleMutationWithRate:mutationRate];
@@ -60,6 +55,48 @@
     Organism *child = [[Organism alloc] initWithGenome:childsGenome];
     
     return child;
+}
+
+- (NSString *)generateChildGeneSequenceFromMate:(Organism *)mate crossoverMethod:(CrossoverMethod)crossoverMethod {
+    NSString *ourGeneSequence = self.genome.sequence;
+    NSString *mateGeneSequence = mate.genome.sequence;
+
+    switch (crossoverMethod) {
+
+        // Randomly generate a crossover point and combine the parent's genomes there - which will
+        // be the child's starting gene sequence.
+        case CrossoverMethodOnePoint: {
+            NSInteger crossoverPoint = [Random randomIntegerFromMin:1 toMax:ourGeneSequence.length - 2];
+            NSString *ourContribution = [ourGeneSequence substringToIndex:crossoverPoint];
+            NSString *mateContribution = [mateGeneSequence substringFromIndex:crossoverPoint];
+
+            return [ourContribution stringByAppendingString:mateContribution];
+        }
+
+        // The same as one-point, although two points (one range) are chosen and the genome is split on those,
+        // with the our genome contributing to the first and last 1/3 of the genes and the mate
+        // contributing to the middle 1/3.
+        case CrossoverMethodTwoPoint: {
+            NSRange rangeForCrossover = [[self class] generateRangeForTwoPointCrossoverFromLength:self.genome.sequence.length];
+
+            NSString *ourFirstContribution = [ourGeneSequence substringToIndex:rangeForCrossover.location];
+            NSString *mateContribution = [mateGeneSequence substringWithRange:rangeForCrossover];
+            NSString *ourSecondContribution = [ourGeneSequence substringFromIndex:rangeForCrossover.location + rangeForCrossover.length];
+
+            return [[ourFirstContribution stringByAppendingString:mateContribution] stringByAppendingString:ourSecondContribution];
+        }
+    }
+}
+
+
+#pragma mark - Crossover Utils
+
++ (NSRange)generateRangeForTwoPointCrossoverFromLength:(NSUInteger)geneSequenceLength {
+    NSParameterAssert(geneSequenceLength >= kMinimumGeneSequenceLength);
+
+    NSInteger beginningOfMateRange = [Random randomIntegerFromMin:1 toMax:floor((geneSequenceLength / 2.0)) - 1];
+    NSInteger lengthOfMateRange = [Random randomIntegerFromMin:1 toMax:geneSequenceLength - beginningOfMateRange - 2];
+    return NSMakeRange(beginningOfMateRange, lengthOfMateRange);
 }
 
 
