@@ -9,7 +9,6 @@
 #import "Genome.h"
 #import "Random.h"
 
-static NSUInteger const kMinimumGeneSequenceLength = 4;
 
 @implementation Genome
 

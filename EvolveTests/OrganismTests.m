@@ -13,6 +13,12 @@
 
 static NSInteger const kOrganismTestIterations = 10000;
 
+@interface Organism (Testing)
+
++ (NSRange)generateRangeForTwoPointCrossoverFromLength:(NSUInteger)geneSequenceLength;
+
+@end
+
 @interface OrganismTests : XCTestCase
 
 @end
@@ -159,6 +165,36 @@ static NSInteger const kOrganismTestIterations = 10000;
         Organism *parent1 = [[Organism alloc] initRandomWithGeneSequenceLength:testLength domain:@"abc"];
         Organism *parent2 = [[Organism alloc] initRandomWithGeneSequenceLength:testLength domain:@"123"];
         __unused Organism *offspring = [parent1 mateWithOrganism:parent2 crossoverMethod:CrossoverMethodOnePoint mutationRate:0.0];
+    };
+
+    XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
+}
+
+- (void)testGenerateRangeForTwoPointCrossoverWithMinimumLength {
+    for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
+        NSRange range = [Organism generateRangeForTwoPointCrossoverFromLength:kMinimumGeneSequenceLength];
+
+        XCTAssertEqual(range.location, 1);
+        XCTAssertEqual(range.length, 1);
+    }
+}
+
+- (void)testGenerateRangeForTwoPointCrossoverWithRandomLength {
+    for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
+        NSUInteger randomLength = [Random randomIntegerFromMin:4 toMax:100];
+        NSRange range = [Organism generateRangeForTwoPointCrossoverFromLength:randomLength];
+        NSUInteger lastIndexFromRange = range.location + range.length + 1;
+
+        XCTAssertGreaterThanOrEqual(range.location, 1);
+        XCTAssertGreaterThanOrEqual(range.length, 1);
+        XCTAssertLessThan(lastIndexFromRange, randomLength);
+    }
+}
+
+- (void)testGenerateRangeForTwoPointCrossoverWithInvalidLength {
+    void (^expressionBlock)() = ^{
+        NSInteger randomInvalidLength = [Random randomIntegerFromMin:0 toMax:kMinimumGeneSequenceLength - 1];
+        [Organism generateRangeForTwoPointCrossoverFromLength:randomInvalidLength];
     };
 
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);

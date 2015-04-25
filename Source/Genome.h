@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+static NSUInteger const kMinimumGeneSequenceLength = 4;
+
 @interface Genome : NSObject
 
 @property (nonatomic, strong) NSString *domain;

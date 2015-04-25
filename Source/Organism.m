@@ -73,19 +73,30 @@
             return [ourContribution stringByAppendingString:mateContribution];
         }
 
-        // The same as one-point, although two points are chosen and the genome is split on those,
+        // The same as one-point, although two points (one range) are chosen and the genome is split on those,
         // with the our genome contributing to the first and last 1/3 of the genes and the mate
         // contributing to the middle 1/3.
         case CrossoverMethodTwoPoint: {
-            NSInteger crossoverPoint1 = [Random randomIntegerFromMin:0 toMax:floor((ourGeneSequence.length / 2.0)) - 1];
-            NSInteger crossoverPoint2 = [Random randomIntegerFromMin:crossoverPoint1 + 1 toMax:ourGeneSequence.length - 1];
-            NSString *ourFirstContribution = [ourGeneSequence substringToIndex:crossoverPoint1];
-            NSString *mateContribution = [mateGeneSequence substringWithRange:NSMakeRange(crossoverPoint1, crossoverPoint2 - crossoverPoint1)];
-            NSString *ourSecondContribution = [ourGeneSequence substringFromIndex:crossoverPoint2];
+            NSRange rangeForCrossover = [[self class] generateRangeForTwoPointCrossoverFromLength:self.genome.sequence.length];
+
+            NSString *ourFirstContribution = [ourGeneSequence substringToIndex:rangeForCrossover.location];
+            NSString *mateContribution = [mateGeneSequence substringWithRange:rangeForCrossover];
+            NSString *ourSecondContribution = [ourGeneSequence substringFromIndex:rangeForCrossover.location + rangeForCrossover.length];
 
             return [[ourFirstContribution stringByAppendingString:mateContribution] stringByAppendingString:ourSecondContribution];
         }
     }
+}
+
+
+#pragma mark - Crossover Utils
+
++ (NSRange)generateRangeForTwoPointCrossoverFromLength:(NSUInteger)geneSequenceLength {
+    NSParameterAssert(geneSequenceLength >= kMinimumGeneSequenceLength);
+
+    NSInteger beginningOfMateRange = [Random randomIntegerFromMin:1 toMax:floor((geneSequenceLength / 2.0)) - 1];
+    NSInteger lengthOfMateRange = [Random randomIntegerFromMin:1 toMax:geneSequenceLength - beginningOfMateRange - 2];
+    return NSMakeRange(beginningOfMateRange, lengthOfMateRange);
 }
 
 
