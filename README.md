@@ -1,7 +1,5 @@
 ## Evolve
 
-An Evolution Simulation Engine written in Objective-C.
-
 [![License](https://img.shields.io/cocoapods/l/Evolve.svg)](http://doge.mit-license.org) [![Build Status](https://img.shields.io/travis/mamaral/Evolve.svg)](https://travis-ci.org/mamaral/Evolve/) ![Badge w/ Version](https://img.shields.io/cocoapods/v/Evolve.svg)
 
 
@@ -9,13 +7,15 @@ An Evolution Simulation Engine written in Objective-C.
 
 Evolve is a customizable [***evolutionary algorithm***](http://en.wikipedia.org/wiki/Evolutionary_algorithm) engine with the following features:
 
-- **Phenotype-Agnostic**. What does that mean? Good question - as far as I know I just made it up now. In a nutshell, the engine doesn't know or care what your organisms are, how they behave, what their environment is, or how their genomes effect the [phenotype](http://en.wikipedia.org/wiki/Phenotype) of the organism. 
-- **Customizable genomes**. You may want your genome to represent a color value, so you choose to define the domain of the genome to be all hex characters `0123456789ABCDEF` and the length to be `6`, so you can easily translate a gene sequence like `FF0000` to the color red. You might want your domain to be a binary string, `01` with the length `6`, like `110100`, where the first two digits represent the speed of your organism, the next two represent the strength of your organism, and the last two represent how well they're camouflaged. You define what the genome is and how it manifests itself in the wild, the possibilities are endless. Be creative!
-- **Constant population size** from generation to generation.
-- **Tournament style selection.**
-- ***Tweakable*** **simulation parameters.** Play around with some of the settable variables to see how they effect the simulation. *Tweak the dials*, make predictions and test your hypotheses in real-time!
-- **Flexible simulation mechanics.** The engine doesn't continue with the next generation whenever it wants, it waits for you to tell it to continue. Because of this, you can run the simulation in a for-loop running through thousands of generations almost instantly, or you can take each organism in your population and put them in a real-time interactive simulation using something like SpriteKit, making each generation take minutes, or even hours, if that's what interests you.
-- With all of that in mind, ***I seriously have no idea*** the extent of what can or will be created, that's what makes this so damn cool.
+- [x] **Phenotype-Agnostic**. What does that mean? Good question - as far as I know I just made it up now. In a nutshell, the engine doesn't know or care what your organisms are, how they behave, what their environment is, or how their genomes effect the [***phenotype***](http://en.wikipedia.org/wiki/Phenotype) of the organism. 
+- [x] **Customizable genomes**. You may want your genome to represent a color value, so you choose to define the domain of the genome to be all hex characters `0123456789ABCDEF` and the length to be `6`, so you can easily translate a gene sequence like `FF0000` to the color red. You might want your domain to be a binary string, `01` with the length `6`, like `110100`, where the first two digits represent the speed of your organism, the next two represent the strength of your organism, and the last two represent how well they're camouflaged. You define what the genome is and how it manifests itself in the wild, the possibilities are endless. Be creative!
+- [x] **Constant population size** from generation to generation.
+- [x] **Tournament style selection.**
+- [x] **Single-point crossover.**
+- [x] **Uniform mutation.**
+- [x] ***Tweakable*** **simulation parameters.** Play around with some of the settable variables to see how they effect the simulation. *Tweak the dials*, make predictions and test your hypotheses in real-time!
+- [x] **Flexible simulation mechanics.** The engine doesn't continue with the next generation whenever it wants, it waits for you to tell it to continue. Because of this, you can run the simulation in a for-loop running through thousands of generations almost instantly, or you can take each organism in your population and put them in a real-time interactive simulation using something like SpriteKit, making each generation take minutes, or even hours, if that's what interests you.
+- [x] With all of that in mind, ***I seriously have no idea*** the extent of what can or will be created, that's what makes this so damn cool.
 
 ## Example Simulation Flow
 
