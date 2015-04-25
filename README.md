@@ -1,9 +1,33 @@
-##Evolve
+## Evolve
 
 An Evolution Simulation Engine written in Objective-C.
 
 [![License](https://img.shields.io/cocoapods/l/Evolve.svg)](http://doge.mit-license.org) [![Build Status](https://img.shields.io/travis/mamaral/Evolve.svg)](https://travis-ci.org/mamaral/Evolve/) ![Badge w/ Version](https://img.shields.io/cocoapods/v/Evolve.svg)
 
+
+## What is this?
+
+Evolve is a customizable [***evolutionary algorithm***](http://en.wikipedia.org/wiki/Evolutionary_algorithm) engine with the following features:
+
+- **Phenotype-Agnostic**. What does that mean? Good question - as far as I know I just made it up now. In a nutshell, the engine doesn't know or care what your organisms are, how they behave, what their environment is, or how their genomes effect the [phenotype](http://en.wikipedia.org/wiki/Phenotype) of the organism. 
+- **Customizable genomes**. You may want your genome to represent a color value, so you choose to define the domain of the genome to be all hex characters `0123456789ABCDEF` and the length to be `6`, so you can easily translate a gene sequence like `FF0000` to the color red. You might want your domain to be a binary string, `01` with the length `6`, like `110100`, where the first two digits represent the speed of your organism, the next two represent the strength of your organism, and the last two represent how well they're camouflaged. You define what the genome is and how it manifests itself in the wild, the possibilities are endless. Be creative!
+- **Constant population size** from generation to generation.
+- **Tournament style selection.**
+- ***Tweakable*** **simulation parameters.** Play around with some of the settable variables to see how they effect the simulation. *Tweak the dials*, make predictions and test your hypotheses in real-time!
+- **Flexible simulation mechanics.** The engine doesn't continue with the next generation whenever it wants, it waits for you to tell it to continue. Because of this, you can run the simulation in a for-loop running through thousands of generations almost instantly, or you can take each organism in your population and put them in a real-time interactive simulation using something like SpriteKit, making each generation take minutes, or even hours, if that's what interests you.
+- With all of that in mind, ***I seriously have no idea*** the extent of what can or will be created, that's what makes this so damn cool.
+
+## Example Simulation Flow
+
+1. Create a `Population` of `Organisms` with either of two methods:
+	- ***Random*** - Create a randomized `Population`, defining the number of `Organisms`, and the characteristics of their `Genome`, and the engine creates the initial `Population` for you.
+	- ***Seeded*** - Create individual `Organisms` for your initial population, defining the characteristics of their `Genome`.
+2. Create an instance of `EvolutionManager` to handle running the underlying simulation, and set your appropriate `delegate` conforming to the `<EvolutionDelegate>` protocol. (Currently one required method.)
+3. Assign your `EvolutionManager` the `Population` you just created.
+4. Evaluate the fitness of each `Organism` in your `Population`.
+5. Tell your `EvolutionManager` to proceed with the selection and breeding process.
+6. Once the `EvolutionManager` has completed the selection process, it will pass back to you information about the generation it just processed, as well as an updated `Population` for the next generation.
+7. If you want to continue with the simulation, repeat from step #4.
 
 
 ## Installation
@@ -15,10 +39,12 @@ pod ‘Evolve’
 ```
 
 
-## Classic Example: [The Weasel Program](http://en.wikipedia.org/wiki/Weasel_program)
+## A Classic Example: [The Weasel Program](http://en.wikipedia.org/wiki/Weasel_program)
 ![Weasel Program](Screenshots/methinks.gif)
 
 > "I don't know who it was first pointed out that, given enough time, a monkey bashing away at random on a typewriter could produce all the works of Shakespeare. The operative phrase is, of course, given enough time. Let us limit the task facing our monkey somewhat. Suppose that he has to produce, not the complete works of Shakespeare but just the short sentence 'Methinks it is like a weasel', and we shall make it relatively easy by giving him a typewriter with a restricted keyboard, one with just the 26 (capital) letters, and a space bar. How long will he take to write this one little sentence?" - Richard Dawkins
+
+****Check out the included demo program for the full implementation of this.***
 
 
 # ***Initializing the Population***
