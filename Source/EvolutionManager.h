@@ -27,6 +27,7 @@
 
 @property (nonatomic) NSUInteger currentGeneration;
 
+@property (nonatomic) enum CrossoverMethod crossoverMethod;
 @property (nonatomic) NSUInteger tournamentSize;
 @property (nonatomic) CGFloat elitismPercentage;
 @property (nonatomic) CGFloat mutationRate;

@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "Genome.h"
 
+typedef NS_ENUM(NSUInteger, CrossoverMethod) {
+    CrossoverMethodOnePoint,
+    CrossoverMethodTwoPoint
+};
+
 @interface Organism : NSObject
 
 @property (nonatomic, strong) Genome *genome;
@@ -18,6 +23,6 @@
 - (instancetype)initWithGenome:(Genome *)genome;
 - (instancetype)initRandomWithGeneSequenceLength:(NSUInteger)length domain:(NSString *)domain;
 
-+ (instancetype)offspringFromParent1:(Organism *)parent1 parent2:(Organism *)parent2 mutationRate:(CGFloat)mutationRate;
+- (instancetype)mateWithOrganism:(Organism *)mate crossoverMethod:(enum CrossoverMethod)crossoverMethod mutationRate:(CGFloat)mutationRate;
 
 @end

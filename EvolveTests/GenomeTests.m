@@ -23,7 +23,7 @@ static NSInteger const kGenomeTestIterations = 10000;
     NSString *entireDomain = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789";
     
     for (NSInteger i = 0; i < kGenomeTestIterations; i++) {
-        NSInteger randomSequenceLength = [Random randomIntegerFromMin:1 toMax:50];
+        NSInteger randomSequenceLength = [Random randomIntegerFromMin:4 toMax:50];
         NSInteger randomDomainLength = [Random randomIntegerFromMin:1 toMax:25];
         NSString *randomDomain = [Random randomGeneSequenceWithLength:randomDomainLength domain:entireDomain];
         NSString *randomGeneSequence = [Random randomGeneSequenceWithLength:randomSequenceLength domain:randomDomain];
@@ -40,7 +40,7 @@ static NSInteger const kGenomeTestIterations = 10000;
     NSString *entireDomain = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789";
 
     for (NSInteger i = 0; i < kGenomeTestIterations; i++) {
-        NSInteger randomSequenceLength = [Random randomIntegerFromMin:1 toMax:50];
+        NSInteger randomSequenceLength = [Random randomIntegerFromMin:4 toMax:50];
         NSInteger randomDomainLength = [Random randomIntegerFromMin:1 toMax:25];
         NSString *randomDomain = [Random randomGeneSequenceWithLength:randomDomainLength domain:entireDomain];
 
@@ -111,7 +111,7 @@ static NSInteger const kGenomeTestIterations = 10000;
 - (void)testHandleMutationGuarenteed {
     // With a 100% mutation rate a gene should never be the same after mutation.
     NSString *testDomain = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:1 domain:testDomain];
+    Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:4 domain:testDomain];
     
     for (NSInteger i = 0; i < kGenomeTestIterations; i++) {
         NSString *originalGeneSequence = testGenome.sequence;
@@ -127,7 +127,7 @@ static NSInteger const kGenomeTestIterations = 10000;
 - (void)testHandleMutationShouldNotHappen {
     // With a 0% mutation rate a gene should be the same after mutation.
     NSString *testDomain = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:1 domain:testDomain];
+    Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:4 domain:testDomain];
 
     for (NSInteger i = 0; i < kGenomeTestIterations; i++) {
         NSString *originalGeneSequence = testGenome.sequence;

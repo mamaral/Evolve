@@ -8,6 +8,7 @@
 
 #import "EvolutionManager.h"
 
+static enum CrossoverMethod const kDefaultCrossoverMethod = CrossoverMethodOnePoint;
 static CGFloat const kDefaultMutationRate = 0.05;
 static CGFloat const kDefaultElitismPercentage = 0.10;
 static NSInteger const kDefaultTournamentSize = 2;
@@ -30,6 +31,7 @@ static NSInteger const kDefaultTournamentSize = 2;
     self.population = population;
 
     // Set our defaults.
+    self.crossoverMethod = kDefaultCrossoverMethod;
     self.mutationRate = kDefaultMutationRate;
     self.elitismPercentage = kDefaultElitismPercentage;
     self.tournamentSize = self.population.organisms.count > 3 ? kDefaultTournamentSize : 1;
@@ -130,7 +132,7 @@ static NSInteger const kDefaultTournamentSize = 2;
             continue;
         }
 
-        Organism *child = [Organism offspringFromParent1:parent1 parent2:parent2 mutationRate:self.mutationRate];
+        Organism *child = [parent1 mateWithOrganism:parent2 crossoverMethod:self.crossoverMethod mutationRate:self.mutationRate];
 
         // Add this child to our array of offspring.
         [offspring addObject:child];

@@ -9,6 +9,8 @@
 #import "Genome.h"
 #import "Random.h"
 
+static NSUInteger const kMinimumGeneSequenceLength = 4;
+
 @implementation Genome
 
 #pragma mark - Initializers
@@ -25,7 +27,7 @@
     }
 
     NSParameterAssert(geneSequence);
-    NSParameterAssert(geneSequence.length > 0);
+    NSParameterAssert(geneSequence.length >= kMinimumGeneSequenceLength);
     NSParameterAssert(domain);
     NSParameterAssert(domain.length > 0);
 
