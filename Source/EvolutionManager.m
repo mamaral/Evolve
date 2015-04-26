@@ -21,10 +21,6 @@ static NSInteger const kDefaultTournamentSize = 2;
 - (instancetype)initWithPopulation:(Population *)population {
     self = [super init];
 
-    if (!self) {
-        return nil;
-    }
-
     NSParameterAssert(population);
 
     // Assign our passed-in population.

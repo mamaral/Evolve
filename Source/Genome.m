@@ -21,10 +21,6 @@
 - (instancetype)initWithGeneSequence:(NSString *)geneSequence domain:(NSString *)domain {
     self = [super init];
 
-    if (!self) {
-        return nil;
-    }
-
     NSParameterAssert(geneSequence);
     NSParameterAssert(geneSequence.length >= kMinimumGeneSequenceLength);
     NSParameterAssert(domain);

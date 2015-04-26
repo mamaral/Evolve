@@ -21,10 +21,6 @@
 - (instancetype)initWithOrganisms:(NSArray *)organisms {
     self = [super init];
 
-    if (!self) {
-        return nil;
-    }
-
     NSParameterAssert(organisms);
     NSParameterAssert(organisms.count >= 2);
 
