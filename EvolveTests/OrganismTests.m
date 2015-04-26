@@ -103,7 +103,10 @@ static NSInteger const kOrganismTestIterations = 10000;
     for (NSInteger i = 0; i < kOrganismTestIterations; i++) {
         Organism *parent1 = [[Organism alloc] initRandomWithGeneSequenceLength:testGeneSequenceLength domain:testDomain];
         Organism *parent2 = [[Organism alloc] initRandomWithGeneSequenceLength:testGeneSequenceLength domain:testDomain];
-        Organism *offspring = [parent1 mateWithOrganism:parent2 crossoverMethod:CrossoverMethodOnePoint mutationRate:0.0];
+
+        CrossoverMethod crossoverMethod = ([Random randomIntegerFromMin:0 toMax:1] == 0) ? CrossoverMethodOnePoint : CrossoverMethodTwoPoint;
+
+        Organism *offspring = [parent1 mateWithOrganism:parent2 crossoverMethod:crossoverMethod mutationRate:0.0];
 
         XCTAssertNotNil(offspring);
         XCTAssertNotNil(offspring.genome);
