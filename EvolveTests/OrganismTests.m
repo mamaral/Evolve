@@ -200,4 +200,8 @@ static NSInteger const kOrganismTestIterations = 10000;
     XCTAssertThrowsSpecificNamed(expressionBlock(), NSException, NSInternalInconsistencyException);
 }
 
+- (void)testDebugDescription {
+    XCTAssertNotNil([[[Organism alloc] initRandomWithGeneSequenceLength:5 domain:@"ABCD"] debugDescription]);
+}
+
 @end
