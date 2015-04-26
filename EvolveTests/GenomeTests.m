@@ -140,4 +140,11 @@ static NSInteger const kGenomeTestIterations = 10000;
     }
 }
 
+- (void)testDebugDescription {
+    NSString *testDomain = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    Genome *testGenome = [[Genome alloc] initRandomGenomeWithLength:4 domain:testDomain];
+
+    XCTAssertNotNil([testGenome debugDescription]);
+}
+
 @end

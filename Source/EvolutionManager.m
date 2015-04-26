@@ -21,10 +21,6 @@ static NSInteger const kDefaultTournamentSize = 2;
 - (instancetype)initWithPopulation:(Population *)population {
     self = [super init];
 
-    if (!self) {
-        return nil;
-    }
-
     NSParameterAssert(population);
 
     // Assign our passed-in population.
@@ -90,7 +86,7 @@ static NSInteger const kDefaultTournamentSize = 2;
 
 - (NSArray *)sortOrganismsByFitness:(NSArray *)organisms {
     return [organisms sortedArrayUsingComparator:^NSComparisonResult(Organism *orgA, Organism *orgB) {
-        if (orgA.fitness < orgA.fitness) {
+        if (orgB.fitness < orgA.fitness) {
             return NSOrderedAscending;
         }
 

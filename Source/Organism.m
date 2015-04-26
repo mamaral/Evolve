@@ -22,10 +22,6 @@
 - (instancetype)initWithGenome:(Genome *)genome {
     self = [self init];
 
-    if (!self) {
-        return nil;
-    }
-
     NSParameterAssert(genome);
 
     self.genome = genome;
@@ -35,10 +31,6 @@
 
 - (instancetype)init {
     self = [super init];
-
-    if (!self) {
-        return nil;
-    }
 
     _isAlive = YES;
 
