@@ -46,20 +46,19 @@ static NSInteger const kDefaultTournamentSize = 2;
     NSParameterAssert(self.delegate);
 
     // First filter out any dead organisms from our population.
-    NSArray *filteredOrganisms = [self filterDead:self.population.organisms];
-
-    // Sort the organisms by fitness.
-    NSArray *sortedOrganisms = [self sortOrganismsByFitness:filteredOrganisms];
+    NSArray *allOrganisms = self.population.organisms;
+    NSArray *filteredOrganisms = [self filterDead:allOrganisms];
 
     // Calculate the number of elite organisms that will live on to the next generation,
     // and get that number from the sorted list of organisms.
-    NSInteger numberOfElites = [self calculateNumberOfElites];
+    NSInteger numberOfElites = [self calculateNumberOfElitesForOrganismCount:filteredOrganisms.count];
+    NSArray *sortedOrganisms = [self sortOrganismsByFitness:filteredOrganisms];
     NSArray *elites = [sortedOrganisms subarrayWithRange:NSMakeRange(0, numberOfElites)];
 
     // Calculate the number of children we need to generate for the next generation, and pass
     // the unsorted list of all organisms to the method that will generate them.
     NSInteger numberOfChildren = [self calculateNumberOfOffspringFromEliteCount:numberOfElites];
-    NSArray *offspring = [self generateOffspringFromOrganisms:sortedOrganisms count:numberOfChildren];
+    NSArray *offspring = [self generateOffspringFromOrganisms:filteredOrganisms count:numberOfChildren];
 
     // Build our complete next generation of organisms, including the elite organisms that will live on to the next
     // generation, as well as the children - then shuffle the list to avoid any ordering bias.
@@ -191,13 +190,11 @@ static NSInteger const kDefaultTournamentSize = 2;
 
 #pragma mark - Calculations
 
-- (NSInteger)calculateNumberOfElites {
-    return (NSInteger)round(self.population.organisms.count * self.elitismPercentage);
+- (NSInteger)calculateNumberOfElitesForOrganismCount:(NSUInteger)count {
+    return (NSInteger)round(count * self.elitismPercentage);
 }
 
 - (NSInteger)calculateNumberOfOffspringFromEliteCount:(NSInteger)eliteCount {
-    NSParameterAssert(eliteCount < self.population.organisms.count);
-
     return self.population.organisms.count - eliteCount;
 }
 

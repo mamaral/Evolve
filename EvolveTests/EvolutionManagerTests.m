@@ -22,7 +22,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 - (NSArray *)survivorsToNextGenerationWithCandidates:(NSArray *)candidates count:(NSInteger)count;
 - (NSArray *)filterDead:(NSArray *)allOrganisms;
 
-- (NSInteger)calculateNumberOfElites;
+- (NSInteger)calculateNumberOfElitesForOrganismCount:(NSUInteger)count;
 - (NSInteger)calculateNumberOfOffspringFromEliteCount:(NSInteger)eliteCount;
 
 @end
@@ -189,7 +189,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
         CGFloat survivalRate = [Random randomIntegerFromMin:1 toMax:99] / 100.0;
         _testManager.elitismPercentage = survivalRate;
 
-        NSInteger numberOfSurvivors = [_testManager calculateNumberOfElites];
+        NSInteger numberOfSurvivors = [_testManager calculateNumberOfElitesForOrganismCount:_testManager.population.organisms.count];
 
         XCTAssertEqual(numberOfSurvivors, round(_testManager.population.organisms.count * survivalRate));
     }
