@@ -81,15 +81,9 @@ static NSInteger const kDefaultTournamentSize = 2;
 
 - (NSArray *)filterDead:(NSArray *)allOrganisms {
     NSMutableArray *filteredOrganisms = [NSMutableArray arrayWithArray:allOrganisms];
-    NSMutableArray *deadOrganisms = [NSMutableArray array];
 
-    for (Organism *organism in filteredOrganisms) {
-        if (!organism.isAlive) {
-            [deadOrganisms addObject:organism];
-        }
-    }
-
-    [filteredOrganisms removeObjectsInArray:deadOrganisms];
+    NSPredicate *deadOrganismPredicate = [NSPredicate predicateWithFormat:@"isAlive = %@", @YES];
+    [filteredOrganisms filterUsingPredicate:deadOrganismPredicate];
 
     return filteredOrganisms;
 }
