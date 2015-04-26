@@ -3,4 +3,6 @@ before_install: gem install cocoapods xcpretty obcd slather -N
 xcode_sdk: iphonesimulator
 xcode_project: Evolve.xcodeproj
 xcode_scheme: EvolveTests
+script:
+ GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES clean test | xcpretty -c
 after_success: slather
