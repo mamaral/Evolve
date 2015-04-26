@@ -20,7 +20,7 @@
 
 
 - (instancetype)initWithGenome:(Genome *)genome {
-    self = [super init];
+    self = [self init];
 
     if (!self) {
         return nil;
@@ -29,6 +29,18 @@
     NSParameterAssert(genome);
 
     self.genome = genome;
+
+    return self;
+}
+
+- (instancetype)init {
+    self = [super init];
+
+    if (!self) {
+        return nil;
+    }
+
+    _isAlive = YES;
 
     return self;
 }
@@ -100,12 +112,20 @@
 }
 
 
+#pragma mark - Life cycle
+
+- (void)kill {
+    _isAlive = NO;
+}
+
+
 #pragma mark - Debugging
 
 - (NSString *)debugDescription {
     return @{
              @"geneSequence": self.genome.sequence,
-             @"fitness": @(self.fitness)
+             @"fitness": @(self.fitness),
+             @"status": self.isAlive ? @"alive" : @"dead"
              }.description;
 }
 
