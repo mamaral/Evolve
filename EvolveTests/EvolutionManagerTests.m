@@ -20,6 +20,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 - (NSArray *)generateOffspringFromOrganisms:(NSArray *)parents count:(NSInteger)offspringCount;
 - (Organism *)winnerOfTournamentSelectionWithCandidates:(NSArray *)candidates;
 - (NSArray *)survivorsToNextGenerationWithCandidates:(NSArray *)candidates count:(NSInteger)count;
+- (NSArray *)filterDead:(NSArray *)allOrganisms;
 
 - (NSInteger)calculateNumberOfElites;
 - (NSInteger)calculateNumberOfOffspringFromEliteCount:(NSInteger)eliteCount;
@@ -83,7 +84,7 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 }
 
 
-#pragma mark - Sorting
+#pragma mark - Sorting / filtering
 
 - (void)testSortOrganismsByFitness {
     NSInteger minFitness = 0;
@@ -112,6 +113,31 @@ static NSInteger const kEvolutionManagerTestIterations = 250;
 - (void)testSortOrganismsByFitnessWithNilArray {
     NSArray *sortedOrganisms = [_testManager sortOrganismsByFitness:nil];
     XCTAssertNil(sortedOrganisms);
+}
+
+- (void)testFilteringTheDead {
+    for (NSInteger i = 0; i < kEvolutionManagerTestIterations; i++) {
+        NSInteger randomNumberOfOrganisms = [Random randomIntegerFromMin:50 toMax:100];
+        NSMutableArray *organisms = [NSMutableArray arrayWithCapacity:randomNumberOfOrganisms];
+
+        for (NSInteger j = 0; j < randomNumberOfOrganisms; j++) {
+            Organism *organism = [[Organism alloc] initRandomWithGeneSequenceLength:5 domain:@"ABCD"];
+            [organisms addObject:organism];
+        }
+
+        NSInteger numberOfCasualties = 0;
+        for (Organism *organism in organisms) {
+            if ([Random randomIntegerFromMin:0 toMax:1]) {
+                [organism kill];
+
+                numberOfCasualties++;
+            }
+        }
+
+        NSArray *filteredOrganisms = [_testManager filterDead:organisms];
+
+        XCTAssertEqual(filteredOrganisms.count, organisms.count - numberOfCasualties);
+    }
 }
 
 

@@ -40,7 +40,7 @@
         return nil;
     }
 
-    self.isAlive = YES;
+    _isAlive = YES;
 
     return self;
 }
@@ -124,7 +124,8 @@
 - (NSString *)debugDescription {
     return @{
              @"geneSequence": self.genome.sequence,
-             @"fitness": @(self.fitness)
+             @"fitness": @(self.fitness),
+             @"status": self.isAlive ? @"alive" : @"dead"
              }.description;
 }
 
