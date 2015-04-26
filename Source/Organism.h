@@ -18,11 +18,13 @@ typedef NS_ENUM(NSUInteger, CrossoverMethod) {
 
 @property (nonatomic, strong) Genome *genome;
 
+@property (nonatomic, readonly) BOOL isAlive;
 @property (nonatomic) NSInteger fitness;
 
 - (instancetype)initWithGenome:(Genome *)genome;
 - (instancetype)initRandomWithGeneSequenceLength:(NSUInteger)length domain:(NSString *)domain;
 
 - (instancetype)mateWithOrganism:(Organism *)mate crossoverMethod:(enum CrossoverMethod)crossoverMethod mutationRate:(CGFloat)mutationRate;
+- (void)kill;
 
 @end

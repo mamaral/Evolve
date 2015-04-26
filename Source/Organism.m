@@ -20,7 +20,7 @@
 
 
 - (instancetype)initWithGenome:(Genome *)genome {
-    self = [super init];
+    self = [self init];
 
     if (!self) {
         return nil;
@@ -29,6 +29,18 @@
     NSParameterAssert(genome);
 
     self.genome = genome;
+
+    return self;
+}
+
+- (instancetype)init {
+    self = [super init];
+
+    if (!self) {
+        return nil;
+    }
+
+    self.isAlive = YES;
 
     return self;
 }
@@ -97,6 +109,13 @@
     NSInteger beginningOfMateRange = [Random randomIntegerFromMin:1 toMax:floor((geneSequenceLength / 2.0)) - 1];
     NSInteger lengthOfMateRange = [Random randomIntegerFromMin:1 toMax:geneSequenceLength - beginningOfMateRange - 2];
     return NSMakeRange(beginningOfMateRange, lengthOfMateRange);
+}
+
+
+#pragma mark - Life cycle
+
+- (void)kill {
+    _isAlive = NO;
 }
 
 
