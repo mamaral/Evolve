@@ -1,6 +1,6 @@
 ## Evolve
 
-[![License](https://img.shields.io/cocoapods/l/Evolve.svg)](http://doge.mit-license.org) [![Build Status](https://img.shields.io/travis/mamaral/Evolve.svg)](https://travis-ci.org/mamaral/Evolve/) ![Badge w/ Version](https://img.shields.io/cocoapods/v/Evolve.svg)
+[![License](https://img.shields.io/cocoapods/l/Evolve.svg)](http://doge.mit-license.org) [![Build Status](https://img.shields.io/travis/mamaral/Evolve.svg)](https://travis-ci.org/mamaral/Evolve/) ![Badge w/ Version](https://img.shields.io/cocoapods/v/Evolve.svg) [![Coverage Status](https://coveralls.io/repos/mamaral/Evolve/badge.svg?branch=code-coverage)](https://coveralls.io/r/mamaral/Evolve?branch=code-coverage)
 
 
 ## What is this?
