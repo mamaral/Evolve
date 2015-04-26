@@ -90,7 +90,7 @@ static NSInteger const kDefaultTournamentSize = 2;
 
 - (NSArray *)sortOrganismsByFitness:(NSArray *)organisms {
     return [organisms sortedArrayUsingComparator:^NSComparisonResult(Organism *orgA, Organism *orgB) {
-        if (orgA.fitness < orgA.fitness) {
+        if (orgB.fitness < orgA.fitness) {
             return NSOrderedAscending;
         }
 
