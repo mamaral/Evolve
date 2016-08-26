@@ -2,6 +2,10 @@
 
 [![License](https://img.shields.io/cocoapods/l/Evolve.svg)](http://doge.mit-license.org) [![Build Status](https://img.shields.io/travis/mamaral/Evolve.svg)](https://travis-ci.org/mamaral/Evolve/) ![Badge w/ Version](https://img.shields.io/cocoapods/v/Evolve.svg) [![Coverage Status](https://coveralls.io/repos/mamaral/Evolve/badge.svg?branch=master)](https://coveralls.io/r/mamaral/Evolve?branch=master)
 
+![Camo](Screenshots/camo.gif)
+![Camo](Screenshots/camo2.gif)
+![Camo](Screenshots/camo3.gif)
+
 
 ## What is this?
 
@@ -17,6 +21,14 @@ Evolve is a customizable [***evolutionary algorithm***](http://en.wikipedia.org/
 - [x] **Flexible simulation mechanics.** The engine doesn't continue with the next generation whenever it wants, it waits for you to tell it to continue. Because of this, you can run the simulation in a for-loop running through thousands of generations almost instantly, or you can take each organism in your population and put them in a real-time interactive simulation using something like SpriteKit, making each generation take minutes, or even hours, if that's what interests you.
 - [x] With all of that in mind, ***I seriously have no idea*** the extent of what can or will be created, that's what makes this so damn cool.
 
+## Installation
+
+Available via [CocoaPods](http://cocoapods.org/?q=Evolve)
+
+```ruby
+pod ‘Evolve’
+```
+
 ## Example Simulation Flow
 
 1. Create a `Population` of `Organisms` with either of two methods:
@@ -29,17 +41,16 @@ Evolve is a customizable [***evolutionary algorithm***](http://en.wikipedia.org/
 6. Once the `EvolutionManager` has completed the selection process, it will pass back to you information about the generation it just processed, as well as an updated `Population` for the next generation.
 7. If you want to continue with the simulation, repeat from step #4.
 
+## Camouflage Example:
 
-## Installation
+The above gifs are examples of a very simple front-end implementation of the algorithm, demonstrating the simple fact that organisms that are well-suited for their environments are more likely to survive, and as such are more likely to pass on their beneficial genes to the next generation, further reinforcing this evolutionary pressure towards blending in with their environment.
 
-Available via [CocoaPods](http://cocoapods.org/?q=Evolve)
+Each organism's genome consists of the letters A-F and the numbers 0-9, and as such a piece of this genome can be mapped easily as a hex string representing their body colorm or *phenotype*. Each generation of chameleons are evaluated based on their *fitness*, which in this case consists of a simple rgb-color-distance calculation determining how closely their color matches that of their surrounding. The most-fit organisms are selected from amongst each generation and are then coupled (the birds and the bees, etc) and used to generate the next generation, taking parts of each of their parents genome with them, then the process is repeated. You can see with a few simple rules the power of evolution in action!
 
-```ruby
-pod ‘Evolve’
-```
+See the demo project for the full implementation.
 
 
-## A Classic Example: [The Weasel Program](http://en.wikipedia.org/wiki/Weasel_program)
+## Another Classic Example: [The Weasel Program](http://en.wikipedia.org/wiki/Weasel_program)
 ![Weasel Program](Screenshots/methinks.gif)
 
 > "I don't know who it was first pointed out that, given enough time, a monkey bashing away at random on a typewriter could produce all the works of Shakespeare. The operative phrase is, of course, given enough time. Let us limit the task facing our monkey somewhat. Suppose that he has to produce, not the complete works of Shakespeare but just the short sentence 'Methinks it is like a weasel', and we shall make it relatively easy by giving him a typewriter with a restricted keyboard, one with just the 26 (capital) letters, and a space bar. How long will he take to write this one little sentence?" - Richard Dawkins
