@@ -11,6 +11,7 @@
 
 static NSUInteger const kPopulationSize = 150;
 static NSString * const kGenomeDomain = @"ABCDEF1234567890";
+static NSString * const kDefaultStartingGenome = @"00000000000000000000";
 
 @interface CamoViewController ()
 
@@ -36,12 +37,6 @@ static NSString * const kGenomeDomain = @"ABCDEF1234567890";
         [self.views addObject:newView];
     }
 
-    Population *startingPopulation = [[Population alloc] initRandomPopulationWithSize:self.views.count geneSequenceLength:20 genomeDomain:kGenomeDomain];
-
-    self.evolutionManager = [[EvolutionManager alloc] initWithPopulation:startingPopulation];
-    self.evolutionManager.delegate = self;
-    self.evolutionManager.mutationRate = .01;
-
     return self;
 }
 
@@ -61,6 +56,19 @@ static NSString * const kGenomeDomain = @"ABCDEF1234567890";
 }
 
 - (void)start {
+    NSMutableArray *organisms = [NSMutableArray arrayWithCapacity:kPopulationSize];
+
+    for (NSUInteger i = 0; i < kPopulationSize; i++) {
+        Genome *genome = [[Genome alloc] initWithGeneSequence:kDefaultStartingGenome domain:kGenomeDomain];
+        Organism *organism = [[Organism alloc] initWithGenome:genome];
+        [organisms addObject:organism];
+    }
+
+    Population *startingPopulation = [[Population alloc] initWithOrganisms:organisms];
+
+    self.evolutionManager = [[EvolutionManager alloc] initWithPopulation:startingPopulation];
+    self.evolutionManager.delegate = self;
+    self.evolutionManager.mutationRate = .01;
     [self.evolutionManager proceedWithSelectionAndBreeding];
 }
 
@@ -104,7 +112,7 @@ static NSString * const kGenomeDomain = @"ABCDEF1234567890";
         organismView.tintColor = newColor;
     }
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self evaluateFitnessForPopulation];
         [self.evolutionManager proceedWithSelectionAndBreeding];
     });

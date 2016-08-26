@@ -2,9 +2,9 @@
 
 [![License](https://img.shields.io/cocoapods/l/Evolve.svg)](http://doge.mit-license.org) [![Build Status](https://img.shields.io/travis/mamaral/Evolve.svg)](https://travis-ci.org/mamaral/Evolve/) ![Badge w/ Version](https://img.shields.io/cocoapods/v/Evolve.svg) [![Coverage Status](https://coveralls.io/repos/mamaral/Evolve/badge.svg?branch=master)](https://coveralls.io/r/mamaral/Evolve?branch=master)
 
-![Camo](Screenshots/camo.gif)
-![Camo](Screenshots/camo2.gif)
-![Camo](Screenshots/camo3.gif)
+![Camo](Screenshots/c1.gif)
+![Camo](Screenshots/c2.gif)
+![Camo](Screenshots/c3.gif)
 
 
 ## What is this?
