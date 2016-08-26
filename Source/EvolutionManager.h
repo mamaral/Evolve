@@ -21,7 +21,7 @@
 
 @interface EvolutionManager : NSObject
 
-@property (nonatomic) id <EvolutionDelegate> delegate;
+@property (nonatomic, weak) id <EvolutionDelegate> delegate;
 
 @property (nonatomic, strong) Population *population;
 

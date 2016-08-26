@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		276491C11D70D869009DB886 /* UIColor+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 276491C01D70D869009DB886 /* UIColor+Utils.m */; };
+		276491C41D70D8EA009DB886 /* CamoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 276491C31D70D8EA009DB886 /* CamoViewController.m */; };
 		276B674D1AC0CBE700F9A222 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 276B674C1AC0CBE700F9A222 /* main.m */; };
 		276B67501AC0CBE700F9A222 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 276B674F1AC0CBE700F9A222 /* AppDelegate.m */; };
 		276B67521AC0CBE700F9A222 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 276B67511AC0CBE700F9A222 /* Images.xcassets */; };
@@ -35,6 +37,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		276491BF1D70D869009DB886 /* UIColor+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Utils.h"; sourceTree = "<group>"; };
+		276491C01D70D869009DB886 /* UIColor+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Utils.m"; sourceTree = "<group>"; };
+		276491C21D70D8EA009DB886 /* CamoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CamoViewController.h; sourceTree = "<group>"; };
+		276491C31D70D8EA009DB886 /* CamoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CamoViewController.m; sourceTree = "<group>"; };
 		276B67471AC0CBE700F9A222 /* Evolve.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Evolve.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		276B674B1AC0CBE700F9A222 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		276B674C1AC0CBE700F9A222 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -81,12 +87,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		276491BD1D70D84B009DB886 /* Weasel */ = {
+			isa = PBXGroup;
+			children = (
+				27CC1D501AE2F2D100CAA20E /* WeaselProgramViewController.h */,
+				27CC1D511AE2F2D100CAA20E /* WeaselProgramViewController.m */,
+			);
+			name = Weasel;
+			sourceTree = "<group>";
+		};
+		276491BE1D70D854009DB886 /* Camo */ = {
+			isa = PBXGroup;
+			children = (
+				276491C21D70D8EA009DB886 /* CamoViewController.h */,
+				276491C31D70D8EA009DB886 /* CamoViewController.m */,
+				276491BF1D70D869009DB886 /* UIColor+Utils.h */,
+				276491C01D70D869009DB886 /* UIColor+Utils.m */,
+			);
+			name = Camo;
+			sourceTree = "<group>";
+		};
 		276B673E1AC0CBE700F9A222 = {
 			isa = PBXGroup;
 			children = (
 				276B676A1AC0CBEE00F9A222 /* Source */,
-				276B675D1AC0CBE700F9A222 /* EvolveTests */,
 				276B67491AC0CBE700F9A222 /* Demo */,
+				276B675D1AC0CBE700F9A222 /* EvolveTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -102,10 +128,10 @@
 		276B67491AC0CBE700F9A222 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				276491BE1D70D854009DB886 /* Camo */,
+				276491BD1D70D84B009DB886 /* Weasel */,
 				276B674E1AC0CBE700F9A222 /* AppDelegate.h */,
 				276B674F1AC0CBE700F9A222 /* AppDelegate.m */,
-				27CC1D501AE2F2D100CAA20E /* WeaselProgramViewController.h */,
-				27CC1D511AE2F2D100CAA20E /* WeaselProgramViewController.m */,
 				276B676B1AC0CC0900F9A222 /* Other */,
 			);
 			path = Demo;
@@ -275,6 +301,8 @@
 				276B67711AC0CC2200F9A222 /* Population.m in Sources */,
 				27DE3BBA1AE5C9CD00499D8D /* EvolutionManager.m in Sources */,
 				276B676E1AC0CC1B00F9A222 /* Genome.m in Sources */,
+				276491C11D70D869009DB886 /* UIColor+Utils.m in Sources */,
+				276491C41D70D8EA009DB886 /* CamoViewController.m in Sources */,
 				276B67741AC0CC3200F9A222 /* Random.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

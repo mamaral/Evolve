@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "WeaselProgramViewController.h"
+#import "CamoViewController.h"
 
 @interface AppDelegate ()
 
@@ -20,7 +21,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[WeaselProgramViewController new]];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[CamoViewController new]];
+//    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[WeaselProgramViewController new]];
 
     [self.window makeKeyAndVisible];
 
