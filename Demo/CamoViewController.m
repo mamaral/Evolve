@@ -32,7 +32,7 @@ static NSString * const kGenomeDomain = @"ABCDEF1234567890";
 
     for (NSUInteger i = 0; i < kPopulationSize; i++) {
         UIImageView *newView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"lizard"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
-        newView.tintColor = [UIColor randomColor];
+        newView.tintColor = [UIColor blackColor];
         [self.views addObject:newView];
     }
 
